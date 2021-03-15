@@ -4,12 +4,19 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "call-of-duty-api": "^1.3.2",
+    "dotenv": "^8.2.0",
+    "mongodb": "^3.6.4",
+    "mongoose": "^5.12.0",
+    "node-cron": "^3.0.0",
+    "nodemon": "^2.0.7",
     "tmi.js": "^1.7.5"
   }
 }
