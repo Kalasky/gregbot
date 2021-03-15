@@ -64,15 +64,7 @@ client.on("chat", (channel, user, message, self) => {
         }
       })
       .catch((err) => {
-        const trackUserError = new Discord.MessageEmbed()
-          .setColor("#FF0000")
-          .setTitle("Error")
-          .setDescription(
-            '- Syntax: `!trackuser <username> <platform>` \n- Run `!platforms` to view a list of trackable platforms.\n- If the username contains spaces wrap it in quotes.\n- Example for a name with spaces: `!trackuser "TT Cudi" xbl`\n- Make sure the username and platform are corresponding. \n- You may also have provided an incorrect username or platform. '
-          )
-          .setThumbnail("https://i.imgur.com/I6hxLXI.png");
-
-        message.channel.send(trackUserError);
+        client.action("kalaskyyy", `Error: ${err}`);
       });
   });
 });
