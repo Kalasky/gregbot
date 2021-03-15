@@ -25,7 +25,7 @@ client.on("connected", (address, port) => {
 
 client.on("chat", (channel, user, message, self) => {
   API.login(process.env.COD_EMAIL, process.env.COD_PASSWORD).then(() => {
-    const id = "Kalasky#1415";
+    const id = "GregSC#21708";
     const platform = "battle";
     API.MWBattleData(id, platform)
       .then((wzData) => {
