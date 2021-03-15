@@ -8,7 +8,7 @@ const options = {
     reconnect: true,
   },
   identity: {
-    username: "Gregs_WZ_Stats",
+    username: "GregBot",
     password: process.env.AUTH_TOKEN,
   },
   channels: ["kalaskyyy"],
