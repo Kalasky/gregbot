@@ -12,7 +12,7 @@ const options = {
     username: "GregBot",
     password: process.env.AUTH_TOKEN,
   },
-  channels: ["kalaskyyy"],
+  channels: ["GregTheBoomer"],
 };
 
 const client = new tmi.client(options);
@@ -20,7 +20,7 @@ const client = new tmi.client(options);
 client.connect();
 
 client.on("connected", (address, port) => {
-  client.action("kalaskyyy", "connected");
+  client.action("GregTheBoomer", "connected");
 });
 
 client.on("chat", (channel, user, message, self) => {
@@ -36,26 +36,35 @@ client.on("chat", (channel, user, message, self) => {
         let topFive = wzData.br.topFive;
 
         // if (message === ">wins") {
-        //   client.action("kalaskyyy", `Kalasky has ${expr} wins in Warzone`);
+        //   client.action("GregTheBoomer", `Greg has ${expr} wins in Warzone`);
         // }
 
         switch (message) {
           case ">kills":
-            client.action("kalaskyyy", `Kalasky has ${kills} kills in Warzone`);
+            client.action(
+              "GregTheBoomer",
+              `Greg has ${kills} kills in Warzone`
+            );
             break;
           case ">wins":
-            client.action("kalaskyyy", `Kalasky has ${wins} wins in Warzone`);
+            client.action("GregTheBoomer", `Greg has ${wins} wins in Warzone`);
+            break;
+          case ">kd":
+            client.action(
+              "GregTheBoomer",
+              `Greg's kill death ratio is ${kd} in Warzone`
+            );
             break;
           case ">top10":
             client.action(
-              "kalaskyyy",
-              `Kalasky has finished top ten in ${topTen} games of Warzone`
+              "GregTheBoomer",
+              `Greg has finished top ten in ${topTen} games of Warzone`
             );
             break;
           case ">top5":
             client.action(
-              "kalaskyyy",
-              `Kalasky has finished top five in ${topFive} games of Warzone`
+              "GregTheBoomer",
+              `Greg has finished top five in ${topFive} games of Warzone`
             );
             break;
 
@@ -64,7 +73,7 @@ client.on("chat", (channel, user, message, self) => {
         }
       })
       .catch((err) => {
-        client.action("kalaskyyy", `Error: ${err}`);
+        client.action("GregTheBoomer", `Error: ${err}`);
       });
   });
 });
