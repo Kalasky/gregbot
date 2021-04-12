@@ -1,0 +1,57 @@
+[
+    {
+        "role_name": "red",
+        "color": "RED",
+        "color_tier": "f"
+    },
+    {
+        "role_name": "orange",
+        "color": "ORANGE",
+        "color_tier": "f"
+    },
+    {
+        "role_name": "yellow",
+        "color": "YELLOW",
+        "color_tier": "f"
+    },
+    {
+        "role_name": "green",
+        "color": "GREEN",
+        "color_tier": "f"
+    },
+    {
+        "role_name": "blue",
+        "color": "BLUE",
+        "color_tier": "f"
+    },
+    {
+        "role_name": "cyan",
+        "color": "#00FFFF",
+        "color_tier": "f"
+    },
+    {
+        "role_name": "purple",
+        "color": "PURPLE",
+        "color_tier": "f"
+    },
+    {
+        "role_name": "brown",
+        "color": "#964B00",
+        "color_tier": "f"
+    },
+    {
+        "role_name": "indigo",
+        "color": "#4B0082",
+        "color_tier": "f"
+    },
+    {
+        "role_name": "violet",
+        "color": "#7F00FF",
+        "color_tier": "f"
+    },
+    {
+        "role_name": "pink",
+        "color": "#FFC0CB",
+        "color_tier": "f"
+    }
+]

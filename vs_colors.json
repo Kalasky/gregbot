@@ -1,0 +1,57 @@
+[
+    {
+        "role_name": "very slightly red",
+        "color": "#ffcccc",
+        "color_tier": "vs"
+    },
+    {
+        "role_name": "very slightly orange",
+        "color": "#ffedcc",
+        "color_tier": "vs"
+    },
+    {
+        "role_name": "very slightly yellow",
+        "color": "#ffffcc",
+        "color_tier": "vs"
+    },
+    {
+        "role_name": "very slightly green",
+        "color": "#ccffcc",
+        "color_tier": "vs"
+    },
+    {
+        "role_name": "very slightly blue",
+        "color": "#ccccff",
+        "color_tier": "vs"
+    },
+    {
+        "role_name": "very slightly cyan",
+        "color": "#ccffff",
+        "color_tier": "vs"
+    },
+    {
+        "role_name": "very slightly purple",
+        "color": "#ffccff",
+        "color_tier": "vs"
+    },
+    {
+        "role_name": "very slightly brown",
+        "color": "#dfbf9f",
+        "color_tier": "s"
+    },
+    {
+        "role_name": "very slightly indigo",
+        "color": "#eaccff",
+        "color_tier": "vs"
+    },
+    {
+        "role_name": "very slightly violet",
+        "color": "#f9d2f9",
+        "color_tier": "vs"
+    },
+    {
+        "role_name": "very slightly pink",
+        "color": "#ffe6ea",
+        "color_tier": "vs"
+    }
+]
