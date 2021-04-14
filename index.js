@@ -81,7 +81,7 @@ dClient.on("message", (message) => {
   try {
     command.execute(message, args);
   } catch (error) {
-    console.error(error);
+    console.log(error);
     message.reply("there was an error trying to execute that command!");
   }
 });
@@ -93,7 +93,7 @@ const options = {
     username: "GregTheRobot",
     password: process.env.AUTH_TOKEN,
   },
-  channels: ["kalaskyyy"],
+  channels: ["GregTheBoomer"],
 };
 
 const client = new tmi.client(options);
@@ -165,6 +165,7 @@ fetch(
 client.on("message", (channel, user, message, self) => {
   // If the message doesn't start with the prefix, exit early.
   if (!message.startsWith(prefix) || self) return;
+  let msg = message.split(" ");
 
   API.login(process.env.COD_EMAIL, process.env.COD_PASSWORD).then(() => {
     const id = "GregSC#21708";
@@ -179,86 +180,120 @@ client.on("message", (channel, user, message, self) => {
 
         switch (message) {
           case ">kills":
-            client.action("kalaskyyy", `Greg has ${kills} kills in Warzone`);
+            client.action(
+              "GregTheBoomer",
+              `Greg has ${kills} kills in Warzone`
+            );
             break;
           case ">wins":
-            client.action("kalaskyyy", `Greg has ${wins} wins in Warzone`);
+            client.action("GregTheBoomer", `Greg has ${wins} wins in Warzone`);
             break;
           case ">kd":
             client.action(
-              "kalaskyyy",
+              "GregTheBoomer",
               `Greg's kill death ratio is ${kd} in Warzone`
             );
             break;
           case ">top10":
             client.action(
-              "kalaskyyy",
+              "GregTheBoomer",
               `Greg has finished top ten in ${topTen} games of Warzone`
             );
             break;
           case ">top5":
             client.action(
-              "kalaskyyy",
+              "GregTheBoomer",
               `Greg has finished top five in ${topFive} games of Warzone`
             );
           case ">commands":
             client.action(
-              "kalaskyyy",
+              "GregTheBoomer",
               `Here's a list of my commands: https://pastebin.com/V8Uv4AcH`
             );
             break;
           case ">help":
             client.action(
-              "kalaskyyy",
+              "GregTheBoomer",
               `Here's a list of my commands: https://pastebin.com/V8Uv4AcH`
             );
             break;
           case ">rapidchess":
-            chessAPI.getPlayerStats("kalaskyyy").then(
-              function (response) {
-                let rapidWin = response.body.chess_rapid.record.win;
-                let rapidLoss = response.body.chess_rapid.record.loss;
-                let rapidDraw = response.body.chess_rapid.record.draw;
-                let rapidBestRating = response.body.chess_rapid.best.rating;
-                let rapidCurrentRating = response.body.chess_rapid.last.rating;
+            chessAPI.getPlayerStats("GregTheBoomer").then(
+              function (res) {
+                let rapidWin = res.body.chess_rapid.record.win;
+                let rapidLoss = res.body.chess_rapid.record.loss;
+                let rapidDraw = res.body.chess_rapid.record.draw;
+                let rapidBestRating = res.body.chess_rapid.best.rating;
+                let rapidCurrentRating = res.body.chess_rapid.last.rating;
                 client.action(
-                  "kalaskyyy",
+                  "GregTheBoomer",
                   `Greg's stats in Rapid: Wins: ${rapidWin} Losses: ${rapidLoss} Draws: ${rapidDraw} Current Elo: ${rapidCurrentRating} Best Elo: ${rapidBestRating}`
                 );
               },
               function (err) {
-                console.error(err);
+                console.log(err);
+                client.action("GregTheBoomer", `${err}`);
               }
             );
             break;
           case ">blitzchess":
             chessAPI.getPlayerStats("GregTheBoomer").then(
-              function (response) {
-                let blitzWin = response.body.chess_blitz.record.win;
-                let blitzLoss = response.body.chess_blitz.record.loss;
-                let blitzDraw = response.body.chess_blitz.record.draw;
-                let blitzBestRating = response.body.chess_blitz.best.rating;
-                let blitzCurrentRating = response.body.chess_blitz.last.rating;
+              function (res) {
+                let blitzWin = res.body.chess_blitz.record.win;
+                let blitzLoss = res.body.chess_blitz.record.loss;
+                let blitzDraw = res.body.chess_blitz.record.draw;
+                let blitzBestRating = res.body.chess_blitz.best.rating;
+                let blitzCurrentRating = res.body.chess_blitz.last.rating;
                 client.action(
-                  "kalaskyyy",
+                  "GregTheBoomer",
                   `Greg's stats in Blitz: Wins: ${blitzWin} Losses: ${blitzLoss} Draws: ${blitzDraw} Current Elo: ${blitzCurrentRating} Best Elo: ${blitzBestRating}`
                 );
               },
               function (err) {
-                console.error(err);
+                console.log(err);
+                client.action("GregTheBoomer", `${err}`);
+              }
+            );
+            break;
+          case `>chess ${msg[1]}`:
+            chessAPI.getPlayerStats(msg[1]).then(
+              function (res) {
+                // blitz
+                let blitzWin = res.body.chess_blitz.record.win;
+                let blitzLoss = res.body.chess_blitz.record.loss;
+                let blitzDraw = res.body.chess_blitz.record.draw;
+                let blitzBestRating = res.body.chess_blitz.best.rating;
+                let blitzCurrentRating = res.body.chess_blitz.last.rating;
+                // rapid
+                let rapidWin = res.body.chess_rapid.record.win;
+                let rapidLoss = res.body.chess_rapid.record.loss;
+                let rapidDraw = res.body.chess_rapid.record.draw;
+                let rapidBestRating = res.body.chess_rapid.best.rating;
+                let rapidCurrentRating = res.body.chess_rapid.last.rating;
+                client.action(
+                  "GregTheBoomer",
+                  `${msg[1]} Blitz stats: Wins: ${blitzWin} Losses: ${blitzLoss} Draws: ${blitzDraw} Current Elo: ${blitzCurrentRating} Best Elo: ${blitzBestRating} ---- ${msg[1]} Rapid stats: Wins: ${rapidWin} Losses: ${rapidLoss} Draws: ${rapidDraw} Current Elo: ${rapidCurrentRating} Best Elo: ${rapidBestRating}`
+                );
+              },
+              function (err) {
+                console.log(err);
+                client.action(
+                  "GregTheBoomer",
+                  `${err} - Make sure the user exists and there is no misspelling`
+                );
               }
             );
             break;
 
           default:
             client.action(
-              "kalaskyyy",
+              "GregTheBoomer",
               `Invalid command. Check out a list of valid commands here: https://pastebin.com/V8Uv4AcH`
             );
         }
       })
       .catch((err) => {
-        client.action("kalaskyyy", `Error: ${err}`);
+        client.action("GregTheBoomer", `Error: ${err}`);
       });
   });
 });
