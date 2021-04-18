@@ -177,7 +177,7 @@ cron.schedule("0 * * * *", () => {
       if (data.data.length !== 0) {
         client.say(
           "GregTheBoomer",
-          "Join our Discord! PagMan https://discord.gg/4rpfMyu"
+          "If you want to hangout with the fellow boomers or know when I go live, you can join our discord! BBoomer https://discord.gg/4rpfMyu"
         );
       } else if (data.data.length === 0) {
         return;
