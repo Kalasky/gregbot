@@ -5,6 +5,7 @@ const { prefix } = require("./config.json");
 const ChessWebAPI = require("chess-web-api");
 const chessAPI = new ChessWebAPI();
 const mongoose = require("mongoose");
+const cron = require("node-cron");
 
 // let color = require("./commands/color");  -- color.execute(message);
 const fs = require("fs");
@@ -106,62 +107,88 @@ client.on("connected", (address, port) => {
 
 var fetch = require("node-fetch");
 // dClient.on("ready", () => {
-fetch(
-  // fetch all custom channel point rewards
-  // https://api.twitch.tv/helix/channel_points/custom_rewards?broadcaster_id=58606718&status=UNFULFILLED
+// fetch(
+//   // fetch all custom channel point rewards
+//   // https://api.twitch.tv/helix/channel_points/custom_rewards?broadcaster_id=58606718&status=UNFULFILLED
 
-  // lists custom reward redemptions for a specific reward
-  // https://api.twitch.tv/helix/channel_points/custom_rewards/redemptions?broadcaster_id=58606718&reward_id=9591e009-bdc6-434d-aa05-3481b4746b46&status=UNFULFILLED
+//   // lists custom reward redemptions for a specific reward
+//   // https://api.twitch.tv/helix/channel_points/custom_rewards/redemptions?broadcaster_id=58606718&reward_id=9591e009-bdc6-434d-aa05-3481b4746b46&status=UNFULFILLED
 
-  "https://api.twitch.tv/helix/channel_points/custom_rewards/redemptions?broadcaster_id=58606718&reward_id=08d5e2d9-ddd7-4082-bc78-39b06b35cd68&status=UNFULFILLED",
-  {
+//   "https://api.twitch.tv/helix/channel_points/custom_rewards/redemptions?broadcaster_id=58606718&reward_id=08d5e2d9-ddd7-4082-bc78-39b06b35cd68&status=UNFULFILLED",
+//   {
+//     headers: {
+//       "client-id": process.env.CLIENT_ID,
+//       Authorization: `Bearer ${process.env.ACCESS_TOKEN}`,
+//     },
+//   }
+// )
+//   .then((res) => res.json())
+//   .then((data) => {
+//     // targeting hard coded guild ID
+
+//     let reward = data.data;
+//     console.log("reward:", reward);
+
+//     /*
+//       - running through all created UNFULFILLED channel reward redemption and grabbing every user_input field
+//       - once logic runs through UNFULFILLED rewards, mark rewards as FULFILLED
+//       */
+//     // reward.forEach((rewards) => console.log(rewards.user_input));
+
+//     // const guild = dClient.guild.cache.get("455697668975362049");
+//     // var role = guild.roles.cache.find((role) => role.name === "PLEB");
+//     // // guild.members.cache.get("220820279667064832").roles.add(role);
+
+//     // dClient.guild.members.fetch("220820279667064832").then((memberData) => {
+//     //   memberData.roles.add(getRole("PLEB", dClient));
+//     // });
+//   });
+// // });
+
+// fetch(
+//   "https://api.twitch.tv/helix/channel_points/custom_rewards?broadcaster_id=58606718",
+//   {
+//     method: "POST",
+//     headers: {
+//       "client-id": process.env.CLIENT_ID,
+//       Authorization: `Bearer ${process.env.ACCESS_TOKEN}`,
+//       "Content-Type": "application/json",
+//     },
+//     body: JSON.stringify({
+//       title: "test creation3",
+//       cost: 50000,
+//       is_user_input_required: true,
+//       prompt: "Enter in your Discord username including the id",
+//     }),
+//   }
+// );
+
+// if channel is live, send message every hour
+cron.schedule("0 * * * *", () => {
+  fetch("https://api.twitch.tv/helix/streams?user_login=gregtheboomer", {
     headers: {
-      "client-id": process.env.CLIENT_ID,
       Authorization: `Bearer ${process.env.ACCESS_TOKEN}`,
+      "Client-Id": process.env.CLIENT_ID,
     },
-  }
-)
-  .then((res) => res.json())
-  .then((data) => {
-    // targeting hard coded guild ID
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      // data.data[0].type === "live"
+      if (data.data.length !== 0) {
+        client.say(
+          "GregTheBoomer",
+          "Join our Discord! PagMan https://discord.gg/4rpfMyu"
+        );
+      } else if (data.data.length === 0) {
+        return;
+      }
+    });
+});
 
-    let reward = data.data;
-    console.log("reward:", reward);
-
-    /*
-      - running through all created UNFULFILLED channel reward redemption and grabbing every user_input field
-      - once logic runs through UNFULFILLED rewards, mark rewards as FULFILLED 
-      */
-    // reward.forEach((rewards) => console.log(rewards.user_input));
-
-    // const guild = dClient.guild.cache.get("455697668975362049");
-    // var role = guild.roles.cache.find((role) => role.name === "PLEB");
-    // // guild.members.cache.get("220820279667064832").roles.add(role);
-
-    // dClient.guild.members.fetch("220820279667064832").then((memberData) => {
-    //   memberData.roles.add(getRole("PLEB", dClient));
-    // });
-  });
-// });
-
-fetch(
-  "https://api.twitch.tv/helix/channel_points/custom_rewards?broadcaster_id=58606718",
-  {
-    method: "POST",
-    headers: {
-      "client-id": process.env.CLIENT_ID,
-      Authorization: `Bearer ${process.env.ACCESS_TOKEN}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      title: "test creation3",
-      cost: 50000,
-      is_user_input_required: true,
-      prompt: "Enter in your Discord username including the id",
-    }),
-  }
-);
-
+// channel: String - Channel name
+// userstate: Object - Userstate object
+// message: String - Message received
+// self: Boolean - Message was sent by the client
 client.on("message", (channel, user, message, self) => {
   // If the message doesn't start with the prefix, exit early.
   if (!message.startsWith(prefix) || self) return;
