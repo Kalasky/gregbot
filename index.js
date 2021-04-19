@@ -94,7 +94,7 @@ const options = {
     username: "GregTheRobot",
     password: process.env.AUTH_TOKEN,
   },
-  channels: ["kalaskyyy"],
+  channels: ["gregtheboomer"],
 };
 
 const client = new tmi.client(options);
@@ -164,7 +164,7 @@ var fetch = require("node-fetch");
 // );
 
 // if channel is live, send message every hour
-cron.schedule("* * * * *", () => {
+cron.schedule("0 * * * *", () => {
   fetch("https://api.twitch.tv/helix/streams?user_login=timthetatman", {
     headers: {
       Authorization: `Bearer ${process.env.ACCESS_TOKEN}`,
@@ -176,7 +176,7 @@ cron.schedule("* * * * *", () => {
       // data.data[0].type === "live"
       if (data.data.length !== 0) {
         client.say(
-          "kalaskyyy",
+          "gregtheboomer",
           "If you want to hangout with the fellow boomers or know when I go live, you can join our discord! BBoomer https://discord.gg/4rpfMyu"
         );
       } else if (data.data.length === 0) {
@@ -207,42 +207,45 @@ client.on("message", (channel, user, message, self) => {
 
         switch (message) {
           case ">kills":
-            client.action("kalaskyyy", `Greg has ${kills} kills in Warzone`);
+            client.action(
+              "gregtheboomer",
+              `Greg has ${kills} kills in Warzone`
+            );
             break;
           case ">wins":
-            client.action("kalaskyyy", `Greg has ${wins} wins in Warzone`);
+            client.action("gregtheboomer", `Greg has ${wins} wins in Warzone`);
             break;
           case ">kd":
             client.action(
-              "kalaskyyy",
+              "gregtheboomer",
               `Greg's kill death ratio is ${kd} in Warzone`
             );
             break;
           case ">top10":
             client.action(
-              "kalaskyyy",
+              "gregtheboomer",
               `Greg has finished top ten in ${topTen} games of Warzone`
             );
             break;
           case ">top5":
             client.action(
-              "kalaskyyy",
+              "gregtheboomer",
               `Greg has finished top five in ${topFive} games of Warzone`
             );
           case ">commands":
             client.action(
-              "kalaskyyy",
+              "gregtheboomer",
               `Here's a list of my commands: https://pastebin.com/V8Uv4AcH`
             );
             break;
           case ">help":
             client.action(
-              "kalaskyyy",
+              "gregtheboomer",
               `Here's a list of my commands: https://pastebin.com/V8Uv4AcH`
             );
             break;
           case ">rapidchess":
-            chessAPI.getPlayerStats("kalaskyyy").then(
+            chessAPI.getPlayerStats("gregtheboomer").then(
               function (res) {
                 let rapidWin = res.body.chess_rapid.record.win;
                 let rapidLoss = res.body.chess_rapid.record.loss;
@@ -250,18 +253,18 @@ client.on("message", (channel, user, message, self) => {
                 let rapidBestRating = res.body.chess_rapid.best.rating;
                 let rapidCurrentRating = res.body.chess_rapid.last.rating;
                 client.action(
-                  "kalaskyyy",
+                  "gregtheboomer",
                   `Greg's stats in Rapid: Wins: ${rapidWin} Losses: ${rapidLoss} Draws: ${rapidDraw} Current Elo: ${rapidCurrentRating} Best Elo: ${rapidBestRating}`
                 );
               },
               function (err) {
                 console.log(err);
-                client.action("kalaskyyy", `${err}`);
+                client.action("gregtheboomer", `${err}`);
               }
             );
             break;
           case ">blitzchess":
-            chessAPI.getPlayerStats("kalaskyyy").then(
+            chessAPI.getPlayerStats("gregtheboomer").then(
               function (res) {
                 let blitzWin = res.body.chess_blitz.record.win;
                 let blitzLoss = res.body.chess_blitz.record.loss;
@@ -269,13 +272,13 @@ client.on("message", (channel, user, message, self) => {
                 let blitzBestRating = res.body.chess_blitz.best.rating;
                 let blitzCurrentRating = res.body.chess_blitz.last.rating;
                 client.action(
-                  "kalaskyyy",
+                  "gregtheboomer",
                   `Greg's stats in Blitz: Wins: ${blitzWin} Losses: ${blitzLoss} Draws: ${blitzDraw} Current Elo: ${blitzCurrentRating} Best Elo: ${blitzBestRating}`
                 );
               },
               function (err) {
                 console.log(err);
-                client.action("kalaskyyy", `${err}`);
+                client.action("gregtheboomer", `${err}`);
               }
             );
             break;
@@ -295,14 +298,14 @@ client.on("message", (channel, user, message, self) => {
                 let rapidBestRating = res.body.chess_rapid.best.rating;
                 let rapidCurrentRating = res.body.chess_rapid.last.rating;
                 client.action(
-                  "kalaskyyy",
+                  "gregtheboomer",
                   `${msg[1]} Blitz stats: Wins: ${blitzWin} Losses: ${blitzLoss} Draws: ${blitzDraw} Current Elo: ${blitzCurrentRating} Best Elo: ${blitzBestRating} ---- ${msg[1]} Rapid stats: Wins: ${rapidWin} Losses: ${rapidLoss} Draws: ${rapidDraw} Current Elo: ${rapidCurrentRating} Best Elo: ${rapidBestRating}`
                 );
               },
               function (err) {
                 console.log(err);
                 client.action(
-                  "kalaskyyy",
+                  "gregtheboomer",
                   `${err} - Make sure the user exists and there is no misspelling`
                 );
               }
@@ -311,13 +314,13 @@ client.on("message", (channel, user, message, self) => {
 
           default:
             client.action(
-              "kalaskyyy",
+              "gregtheboomer",
               `Invalid command. Check out a list of valid commands here: https://pastebin.com/V8Uv4AcH`
             );
         }
       })
       .catch((err) => {
-        client.action("kalaskyyy", `Error: ${err}`);
+        client.action("gregtheboomer", `Error: ${err}`);
       });
   });
 });
