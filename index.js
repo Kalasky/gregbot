@@ -165,7 +165,7 @@ var fetch = require("node-fetch");
 
 // if channel is live, send message every hour
 cron.schedule("0 * * * *", () => {
-  fetch("https://api.twitch.tv/helix/streams?user_login=timthetatman", {
+  fetch("https://api.twitch.tv/helix/streams?user_login=gregtheboomer", {
     headers: {
       Authorization: `Bearer ${process.env.ACCESS_TOKEN}`,
       "Client-Id": process.env.CLIENT_ID,
