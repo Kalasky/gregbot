@@ -95,7 +95,7 @@ module.exports = {
 
             // if agrs[1] (twitchName) matches up with one of the unfulfilled reward user_names apply role
             if (reward[i].user_name === twitchName) {
-              memberData.roles.add(getRole("PLEB", message));
+              memberData.roles.add(getRole("red", message));
               message.channel.send("yorp");
               break;
               // send success embed client-side
