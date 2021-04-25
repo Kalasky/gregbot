@@ -33,17 +33,23 @@ module.exports = {
       .setColor("#00C5CD")
       .setTitle("Pick a color!")
       .setDescription(
-        "If you have redeemed more than the color channel reward more than once, run this command again."
+        "If you have redeemed the color channel reward more than once, run this command again."
       )
       .addFields(
-        {
-          name: "blank",
-          value: "blank",
-        },
-        { name: "blank", value: "blank" }
+        { name: "🇦", value: "very slightly red", inline: true },
+        { name: "🇧", value: "very slightly orange", inline: true },
+        { name: "🇨", value: "very slightly yellow", inline: true },
+        { name: "🇩", value: "very slightly green", inline: true },
+        { name: "🇪", value: "very slightly blue", inline: true },
+        { name: "🇫", value: "very slightly cyan", inline: true },
+        { name: "🇬", value: "very slightly purple", inline: true },
+        { name: "🇭", value: "very slightly brown", inline: true },
+        { name: "🇮", value: "very slightly indigo", inline: true },
+        { name: "🇯", value: "very slightly violet", inline: true },
+        { name: "🇰", value: "very slightly pink", inline: true }
       )
       .setThumbnail("https://i.imgur.com/tpbXWeM.png")
-      .setFooter("We do not store login credentials.");
+      .setFooter("This embed will delete in 60 seconds!");
 
     let getRole = (roleString) => {
       // Find discord role object
@@ -54,9 +60,7 @@ module.exports = {
     };
 
     console.log(message.content);
-    let color = args[0];
-    let twitchName = args[1];
-    console.log(color);
+    let twitchName = args[0];
 
     async function myFetch() {
       let response = await fetch(
@@ -113,6 +117,7 @@ module.exports = {
             // if agrs[1] (twitchName) matches up with one of the unfulfilled reward user_names apply role
             if (reward[i].user_name === twitchName) {
               message.channel.send(initialPromptEmbed).then((embed) => {
+                embed.delete({ timeout: 60000 });
                 embed
                   .react("🇦")
                   .then(() => embed.react("🇧"))
@@ -128,9 +133,120 @@ module.exports = {
                   .catch(() =>
                     console.error("One of the emojis failed to react.")
                   );
+
+                const filter = (reaction, user) => {
+                  return (
+                    [
+                      "🇦",
+                      "🇧",
+                      "🇨",
+                      "🇩",
+                      "🇪",
+                      "🇫",
+                      "🇬",
+                      "🇭",
+                      "🇮",
+                      "🇯",
+                      "🇰",
+                    ].includes(reaction.emoji.name) &&
+                    user.id === message.author.id
+                  );
+                };
+
+                embed
+                  .awaitReactions(filter, {
+                    max: 1,
+                    time: 60000,
+                    errors: ["time"],
+                  })
+                  .then((collected) => {
+                    const reaction = collected.first();
+
+                    switch (reaction.emoji.name) {
+                      case "🇦":
+                        // checking if user already has the role. if not then apply
+                        if (
+                          memberData.roles.cache.some(
+                            (role) => role.name === "very slightly red"
+                          )
+                        ) {
+                          embed.reply("You already have that role!");
+                        } else {
+                          memberData.roles.add(
+                            getRole("very slightly red", message)
+                          );
+                          embed.reply("Role successfully applied!");
+                        }
+
+                        break;
+                      case "🇧":
+                        memberData.roles.add(
+                          getRole("very slightly orange", message)
+                        );
+                        embed.reply("Role successfully applied!");
+                        break;
+                      case "🇨":
+                        memberData.roles.add(
+                          getRole("very slightly yellow", message)
+                        );
+                        embed.reply("Role successfully applied!");
+                        break;
+                      case "🇩":
+                        memberData.roles.add(
+                          getRole("very slightly green", message)
+                        );
+                        embed.reply("Role successfully applied!");
+                        break;
+                      case "🇪":
+                        memberData.roles.add(
+                          getRole("very slightly blue", message)
+                        );
+                        embed.reply("Role successfully applied!");
+                        break;
+                      case "🇫":
+                        memberData.roles.add(
+                          getRole("very slightly cyan", message)
+                        );
+                        embed.reply("Role successfully applied!");
+                        break;
+                      case "🇬":
+                        memberData.roles.add(
+                          getRole("very slightly purple", message)
+                        );
+                        embed.reply("Role successfully applied!");
+                        break;
+                      case "🇭":
+                        memberData.roles.add(
+                          getRole("very slightly brown", message)
+                        );
+                        embed.reply("Role successfully applied!");
+                        break;
+                      case "🇮":
+                        memberData.roles.add(
+                          getRole("very slightly indigo", message)
+                        );
+                        embed.reply("Role successfully applied!");
+                        break;
+                      case "🇯":
+                        memberData.roles.add(
+                          getRole("very slightly violet", message)
+                        );
+                        embed.reply("Role successfully applied!");
+                        break;
+                      case "🇰":
+                        memberData.roles.add(
+                          getRole("very slightly pink", message)
+                        );
+                        embed.reply("Role successfully applied!");
+                        break;
+                      default:
+                        embed.reply("Oops. Something went wrong!");
+                    }
+                  })
+                  .catch(() => {
+                    embed.reply("You didn't leave a reaction in time!");
+                  });
               });
-              memberData.roles.add(getRole("red", message));
-              message.channel.send("yorp");
 
               // after the color role is applied to user in discord, the user's channel point reward is set to FULFILLED
               fetch(
@@ -148,6 +264,12 @@ module.exports = {
               break;
               // send success embed client-side
             }
+
+            // if (reward[i].user_name != twitchName) {
+            //   message.channel.send(
+            //     "You have no pending color role redemptions. Redeem the color channel point reward then try again."
+            //   );
+            // }
             // else if (reward[i].user_name != twitchName) {
             //   const nameError = new Discord.MessageEmbed()
             //     .setColor("#FF0000")

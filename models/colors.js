@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const dataSchema = new mongoose.Schema(
+const colorSchema = new mongoose.Schema(
   {
     rank: {
       type: String,
@@ -30,4 +30,4 @@ const dataSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("Data", playerSchema);
+module.exports = mongoose.model("Color", colorSchema);
