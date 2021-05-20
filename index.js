@@ -313,9 +313,8 @@ client.on("message", (channel, user, message, self) => {
             break;
 
           default:
-            client.action(
-              "GregTheBoomer",
-              `Invalid command. Check out a list of valid commands here: https://pastebin.com/V8Uv4AcH`
+            console.log(
+              "Invalid command. Check out a list of valid commands here: https://pastebin.com/V8Uv4AcH"
             );
         }
       })
