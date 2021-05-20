@@ -4,6 +4,7 @@ const Discord = require("discord.js");
 const { prefix } = require("../config.json");
 const tmi = require("tmi.js");
 var fetch = require("node-fetch");
+const User = require("../models/user");
 
 module.exports = {
   name: "color",
@@ -100,7 +101,7 @@ module.exports = {
       .then((res) => res.json())
       .then((data) => {
         let reward = data.data;
-        console.log("reward:", reward);
+        // console.log("reward:", reward);
 
         /*
         - running through all created UNFULFILLED channel reward redemption and grabbing every user_input field
@@ -116,6 +117,47 @@ module.exports = {
 
             // if agrs[1] (twitchName) matches up with one of the unfulfilled reward user_names apply role
             if (reward[i].user_name === twitchName) {
+              // initialize user doc in db
+              User.findOneAndUpdate(
+                { discordID: message.author.id },
+                {
+                  $set: {
+                    vs_colors: [],
+                    s_colors: [],
+                    f_colors: [],
+                    vs_colors_amount: 0,
+                    s_colors_amount: 0,
+                    f_colors_amount: 0,
+                  },
+                },
+                { upsert: true },
+                function callback(err) {
+                  if (err) {
+                    console.log(err);
+                  }
+                }
+              );
+
+              // gets all roles for current user
+              memberData.guild.members.cache.find((role) => {
+                // let roles = role.name;
+                // console.log(role._roles);
+                console.log(role);
+
+                // arr.push(role.name);
+                // console.log(arr);
+                // const yoyo = Object.keys(role).map((data) => {
+                //   return role[data][0];
+                // });
+                // console.log(yoyo);
+
+                // let dataArray = [];
+                // for (let o in role) {
+                //   dataArray.push(role[o]);
+                // }
+                // console.log(dataArray);
+              });
+
               message.channel.send(initialPromptEmbed).then((embed) => {
                 embed.delete({ timeout: 60000 });
                 embed

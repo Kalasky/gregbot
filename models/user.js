@@ -2,6 +2,12 @@ const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema(
   {
+    discordID: {
+      type: String,
+      trim: true,
+      required: true,
+      unique: true,
+    },
     vs_colors_amount: {
       type: Number,
       trim: true,

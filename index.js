@@ -94,7 +94,7 @@ const options = {
     username: "GregTheRobot",
     password: process.env.AUTH_TOKEN,
   },
-  channels: ["kalaskyyy"],
+  channels: ["uselma4"],
 };
 
 const client = new tmi.client(options);
@@ -310,9 +310,8 @@ client.on("message", (channel, user, message, self) => {
             break;
 
           default:
-            client.action(
-              "kalaskyyy",
-              `Invalid command. Check out a list of valid commands here: https://pastebin.com/V8Uv4AcH`
+            console.log(
+              "Invalid command. Check out a list of valid commands here: https://pastebin.com/V8Uv4AcH"
             );
         }
       })
