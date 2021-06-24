@@ -6,37 +6,22 @@ const userSchema = new mongoose.Schema(
       type: String,
       trim: true,
       required: true,
-      unique: true,
-    },
-    vs_colors_amount: {
-      type: Number,
-      trim: true,
-      required: true,
-    },
-    s_colors_amount: {
-      type: Number,
-      trim: true,
-      required: true,
-    },
-    f_colors_amount: {
-      type: Number,
-      trim: true,
-      required: true,
+      // unique: true,
     },
     vs_colors: {
       type: Array,
       trim: true,
-      required: true,
+      // required: true,
     },
     s_colors: {
       type: Array,
       trim: true,
-      required: true,
+      // required: true,
     },
     f_colors: {
       type: Array,
       trim: true,
-      required: true,
+      // required: true,
     },
   },
   { timestamps: true }

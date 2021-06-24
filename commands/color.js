@@ -5,6 +5,8 @@ const { prefix } = require("../config.json");
 const tmi = require("tmi.js");
 var fetch = require("node-fetch");
 const User = require("../models/user");
+const vs_json = require("../vs_colors.json");
+const s_json = require("../s_colors.json");
 
 module.exports = {
   name: "color",
@@ -12,6 +14,7 @@ module.exports = {
   description: "Pick a color!",
   include: true,
   args: true,
+  cooldown: 0,
   execute(message, args) {
     const options = {
       options: { debug: true },
@@ -22,14 +25,14 @@ module.exports = {
         username: "GregBot",
         password: process.env.AUTH_TOKEN,
       },
-      channels: ["kalaskyyy"],
+      channels: ["edgyyyegirl"],
     };
 
     const client = new tmi.client(options);
 
     client.connect();
 
-    // color embed
+    // very slight color (vs_color) embed
     const initialPromptEmbed = new Discord.MessageEmbed()
       .setColor("#00C5CD")
       .setTitle("Pick a color!")
@@ -60,8 +63,68 @@ module.exports = {
       return role;
     };
 
+    // slight color (s_color) embed
+    const slightColorEmbed = new Discord.MessageEmbed()
+      .setColor("#00C5CD")
+      .setTitle("Pick a color!")
+      .setDescription(
+        "You have obtained all of the very slight colors!\nTrade in all of your very slight colors by selecting a slight color below.\nIf you would like to choose a slight color some other time feel free to ignore this prompt, it will end automatically."
+      )
+      .addFields(
+        { name: "🇦", value: "slightly red", inline: true },
+        { name: "🇧", value: "slightly orange", inline: true },
+        { name: "🇨", value: "slightly yellow", inline: true },
+        { name: "🇩", value: "slightly green", inline: true },
+        { name: "🇪", value: "slightly blue", inline: true },
+        { name: "🇫", value: "slightly cyan", inline: true },
+        { name: "🇬", value: "slightly purple", inline: true },
+        { name: "🇭", value: "slightly brown", inline: true },
+        { name: "🇮", value: "slightly indigo", inline: true },
+        { name: "🇯", value: "slightly violet", inline: true },
+        { name: "🇰", value: "slightly pink", inline: true }
+      )
+      .setThumbnail("https://i.imgur.com/tpbXWeM.png")
+      .setFooter("This embed will delete in 60 seconds!");
+
+    // full color (f_color) embed
+    const fullColorEmbed = new Discord.MessageEmbed()
+      .setColor("#00C5CD")
+      .setTitle("Pick a color!")
+      .setDescription(
+        "You have obtained all of the slight colors!\nTrade in all of your slight colors by selecting a slight color below.\nIf you would like to choose a full color some other time feel free to ignore this prompt, it will end automatically."
+      )
+      .addFields(
+        { name: "🇦", value: "red", inline: true },
+        { name: "🇧", value: "orange", inline: true },
+        { name: "🇨", value: "yellow", inline: true },
+        { name: "🇩", value: "green", inline: true },
+        { name: "🇪", value: "blue", inline: true },
+        { name: "🇫", value: "cyan", inline: true },
+        { name: "🇬", value: "purple", inline: true },
+        { name: "🇭", value: "brown", inline: true },
+        { name: "🇮", value: "indigo", inline: true },
+        { name: "🇯", value: "violet", inline: true },
+        { name: "🇰", value: "pink", inline: true }
+      )
+      .setThumbnail("https://i.imgur.com/tpbXWeM.png")
+      .setFooter("This embed will delete in 60 seconds!");
+
     console.log(message.content);
     let twitchName = args[0];
+
+    const congratsEmbed = new Discord.MessageEmbed()
+      .setColor("#FF69B4")
+      .setTitle("Congratulations!")
+      .setDescription(
+        "You have obtained all of the full colors! The rainbow is all yours.\n\nEnjoy this rainbow unicorn!"
+      )
+      .setThumbnail(
+        "https://thumbs.gfycat.com/EarnestUnrealisticIrishsetter-max-1mb.gif"
+      );
+
+    function inValid() {
+      message.channel.send(nameError);
+    }
 
     async function myFetch() {
       let response = await fetch(
@@ -80,7 +143,7 @@ module.exports = {
         }
       );
 
-      console.log("hhsdghsghds", response.json());
+      console.log("fetch response", response.json());
     }
 
     fetch(
@@ -90,7 +153,7 @@ module.exports = {
       // lists custom reward redemptions for a specific reward
       // https://api.twitch.tv/helix/channel_points/custom_rewards/redemptions?broadcaster_id=58606718&reward_id=9591e009-bdc6-434d-aa05-3481b4746b46&status=UNFULFILLED
 
-      "https://api.twitch.tv/helix/channel_points/custom_rewards/redemptions?broadcaster_id=58606718&reward_id=08d5e2d9-ddd7-4082-bc78-39b06b35cd68&status=UNFULFILLED",
+      "https://api.twitch.tv/helix/channel_points/custom_rewards/redemptions?first=50&broadcaster_id=58606718&reward_id=08d5e2d9-ddd7-4082-bc78-39b06b35cd68&status=UNFULFILLED",
       {
         headers: {
           "client-id": process.env.CLIENT_ID,
@@ -106,28 +169,30 @@ module.exports = {
         /*
         - running through all created UNFULFILLED channel reward redemption and grabbing every user_input field
         - once logic runs through UNFULFILLED rewards, mark rewards as FULFILLED 
+        
         */
 
-        let wrapper = async () => {
+        let vsEmbed = async () => {
+          // looping through all of the channel reward's UNFULFILLED redemptions
           for (let i = 0; i < reward.length; i++) {
             console.log(reward[i].user_name);
             let memberData = await message.guild.members.fetch(
               message.author.id
             );
 
-            // if agrs[1] (twitchName) matches up with one of the unfulfilled reward user_names apply role
+            // grabs all server roles
+            // console.log(memberData.roles.member.guild.roles);
+
+            // if agrs[1] (twitchName) matches up with one of the unfulfilled reward user_names --> apply role
             if (reward[i].user_name === twitchName) {
               // initialize user doc in db
-              User.findOneAndUpdate(
+              User.create(
                 { discordID: message.author.id },
                 {
                   $set: {
                     vs_colors: [],
                     s_colors: [],
                     f_colors: [],
-                    vs_colors_amount: 0,
-                    s_colors_amount: 0,
-                    f_colors_amount: 0,
                   },
                 },
                 { upsert: true },
@@ -140,154 +205,1325 @@ module.exports = {
 
               // gets all roles for current user
               memberData.guild.members.cache.find((role) => {
-                // let roles = role.name;
-                // console.log(role._roles);
                 console.log(role);
-
-                // arr.push(role.name);
-                // console.log(arr);
-                // const yoyo = Object.keys(role).map((data) => {
-                //   return role[data][0];
-                // });
-                // console.log(yoyo);
-
-                // let dataArray = [];
-                // for (let o in role) {
-                //   dataArray.push(role[o]);
-                // }
-                // console.log(dataArray);
               });
 
-              message.channel.send(initialPromptEmbed).then((embed) => {
-                embed.delete({ timeout: 60000 });
-                embed
-                  .react("🇦")
-                  .then(() => embed.react("🇧"))
-                  .then(() => embed.react("🇨"))
-                  .then(() => embed.react("🇩"))
-                  .then(() => embed.react("🇪"))
-                  .then(() => embed.react("🇫"))
-                  .then(() => embed.react("🇬"))
-                  .then(() => embed.react("🇭"))
-                  .then(() => embed.react("🇮"))
-                  .then(() => embed.react("🇯"))
-                  .then(() => embed.react("🇰"))
-                  .catch(() =>
-                    console.error("One of the emojis failed to react.")
-                  );
+              User.find({}).then(() => {
+                User.findOne(
+                  { discordID: message.author.id },
+                  function callback(err, res) {
+                    console.log(
+                      "vs_color initial amount:",
+                      res.vs_colors.length
+                    );
 
-                const filter = (reaction, user) => {
-                  return (
-                    [
-                      "🇦",
-                      "🇧",
-                      "🇨",
-                      "🇩",
-                      "🇪",
-                      "🇫",
-                      "🇬",
-                      "🇭",
-                      "🇮",
-                      "🇯",
-                      "🇰",
-                    ].includes(reaction.emoji.name) &&
-                    user.id === message.author.id
-                  );
-                };
-
-                embed
-                  .awaitReactions(filter, {
-                    max: 1,
-                    time: 60000,
-                    errors: ["time"],
-                  })
-                  .then((collected) => {
-                    const reaction = collected.first();
-
-                    switch (reaction.emoji.name) {
-                      case "🇦":
-                        // checking if user already has the role. if not then apply
-                        if (
-                          memberData.roles.cache.some(
-                            (role) => role.name === "very slightly red"
-                          )
-                        ) {
-                          embed.reply("You already have that role!");
-                        } else {
-                          memberData.roles.add(
-                            getRole("very slightly red", message)
+                    // checking if slight colors is < 11 because if it is maxed out,
+                    // the user needs to be prompted with the full color embed instead
+                    // if f_colors were to be > 10 the user has completed the color journey and should no longer be prompted
+                    if (
+                      res.vs_colors.length < 11 &&
+                      res.s_colors.length < 11 &&
+                      res.f_colors.length < 11
+                    ) {
+                      message.channel.send(initialPromptEmbed).then((embed) => {
+                        embed.delete({ timeout: 60000 });
+                        embed
+                          .react("🇦")
+                          .then(() => embed.react("🇧"))
+                          .then(() => embed.react("🇨"))
+                          .then(() => embed.react("🇩"))
+                          .then(() => embed.react("🇪"))
+                          .then(() => embed.react("🇫"))
+                          .then(() => embed.react("🇬"))
+                          .then(() => embed.react("🇭"))
+                          .then(() => embed.react("🇮"))
+                          .then(() => embed.react("🇯"))
+                          .then(() => embed.react("🇰"))
+                          .catch(() =>
+                            console.error("One of the emojis failed to react.")
                           );
-                          embed.reply("Role successfully applied!");
+
+                        const filter = (reaction, user) => {
+                          return (
+                            [
+                              "🇦",
+                              "🇧",
+                              "🇨",
+                              "🇩",
+                              "🇪",
+                              "🇫",
+                              "🇬",
+                              "🇭",
+                              "🇮",
+                              "🇯",
+                              "🇰",
+                            ].includes(reaction.emoji.name) &&
+                            user.id === message.author.id
+                          );
+                        };
+
+                        embed
+                          .awaitReactions(filter, {
+                            max: 1,
+                            time: 60000,
+                            errors: ["time"],
+                          })
+                          .then((collected) => {
+                            const reaction = collected.first();
+
+                            // function expression that validates and applies a users role
+                            let roleCheck = (roleName) => {
+                              if (
+                                memberData.roles.cache.some(
+                                  (role) => role.name === roleName
+                                )
+                              ) {
+                                embed.reply("You already have that role!");
+                                return false;
+                              } else {
+                                memberData.roles.add(
+                                  getRole(roleName, message)
+                                );
+
+                                // logs the role name and only the role name
+                                console.log(getRole(roleName).name);
+
+                                User.findOneAndUpdate(
+                                  { discordID: message.author.id },
+                                  {
+                                    $addToSet: {
+                                      vs_colors: getRole(roleName).name,
+                                    },
+                                  },
+                                  { upsert: true }
+                                ).then(() => {
+                                  User.findOne(
+                                    { discordID: message.author.id },
+                                    function callback(err, res) {
+                                      console.log(
+                                        "vs_color amount:",
+                                        res.vs_colors.length
+                                      );
+
+                                      if (res.vs_colors.length > 10) {
+                                        message.channel
+                                          .send(slightColorEmbed)
+                                          .then((s_embed) => {
+                                            s_embed.delete({ timeout: 60000 });
+                                            s_embed
+                                              .react("🇦")
+                                              .then(() => s_embed.react("🇧"))
+                                              .then(() => s_embed.react("🇨"))
+                                              .then(() => s_embed.react("🇩"))
+                                              .then(() => s_embed.react("🇪"))
+                                              .then(() => s_embed.react("🇫"))
+                                              .then(() => s_embed.react("🇬"))
+                                              .then(() => s_embed.react("🇭"))
+                                              .then(() => s_embed.react("🇮"))
+                                              .then(() => s_embed.react("🇯"))
+                                              .then(() => s_embed.react("🇰"))
+                                              .catch(() =>
+                                                console.error(
+                                                  "One of the emojis failed to react."
+                                                )
+                                              );
+
+                                            const filter = (reaction, user) => {
+                                              return (
+                                                [
+                                                  "🇦",
+                                                  "🇧",
+                                                  "🇨",
+                                                  "🇩",
+                                                  "🇪",
+                                                  "🇫",
+                                                  "🇬",
+                                                  "🇭",
+                                                  "🇮",
+                                                  "🇯",
+                                                  "🇰",
+                                                ].includes(
+                                                  reaction.emoji.name
+                                                ) &&
+                                                user.id === message.author.id
+                                              );
+                                            };
+
+                                            s_embed
+                                              .awaitReactions(filter, {
+                                                max: 1,
+                                                time: 60000,
+                                                errors: ["time"],
+                                              })
+                                              .then((collected) => {
+                                                const reaction =
+                                                  collected.first();
+
+                                                // function expression that validates and applies a users role
+                                                let roleCheck = (roleName) => {
+                                                  if (
+                                                    memberData.roles.cache.some(
+                                                      (role) =>
+                                                        role.name === roleName
+                                                    )
+                                                  ) {
+                                                    s_embed.reply(
+                                                      "You already have that role!"
+                                                    );
+
+                                                    return false;
+                                                  } else {
+                                                    memberData.roles.add(
+                                                      getRole(roleName, message)
+                                                    );
+
+                                                    // grabbing role_name values from json file and looping thrrough all of them using a for in loop
+                                                    for (var key in vs_json) {
+                                                      if (
+                                                        vs_json.hasOwnProperty(
+                                                          key
+                                                        )
+                                                      ) {
+                                                        console.log(
+                                                          key +
+                                                            " -> " +
+                                                            vs_json[key]
+                                                              .role_name
+                                                        );
+                                                        memberData.roles.remove(
+                                                          getRole(
+                                                            vs_json[key]
+                                                              .role_name
+                                                          )
+                                                        );
+                                                      }
+                                                    }
+
+                                                    // logs the role name and only the role name
+                                                    console.log(
+                                                      getRole(roleName).name
+                                                    );
+
+                                                    User.findOneAndUpdate(
+                                                      {
+                                                        discordID:
+                                                          message.author.id,
+                                                      },
+                                                      {
+                                                        $addToSet: {
+                                                          s_colors:
+                                                            getRole(roleName)
+                                                              .name,
+                                                        },
+                                                        $set: {
+                                                          vs_colors: [],
+                                                        },
+                                                      },
+                                                      { upsert: true }
+                                                    ).then(() => {
+                                                      User.findOne(
+                                                        {
+                                                          discordID:
+                                                            message.author.id,
+                                                        },
+                                                        function callback(
+                                                          err,
+                                                          res
+                                                        ) {
+                                                          console.log(
+                                                            "s_color amount:",
+                                                            res.s_colors.length
+                                                          );
+
+                                                          if (
+                                                            res.s_colors
+                                                              .length > 10
+                                                          ) {
+                                                            message.channel
+                                                              .send(
+                                                                fullColorEmbed
+                                                              )
+                                                              .then(
+                                                                (f_embed) => {
+                                                                  f_embed.delete(
+                                                                    {
+                                                                      timeout: 60000,
+                                                                    }
+                                                                  );
+                                                                  f_embed
+                                                                    .react("🇦")
+                                                                    .then(() =>
+                                                                      f_embed.react(
+                                                                        "🇧"
+                                                                      )
+                                                                    )
+                                                                    .then(() =>
+                                                                      f_embed.react(
+                                                                        "🇨"
+                                                                      )
+                                                                    )
+                                                                    .then(() =>
+                                                                      f_embed.react(
+                                                                        "🇩"
+                                                                      )
+                                                                    )
+                                                                    .then(() =>
+                                                                      f_embed.react(
+                                                                        "🇪"
+                                                                      )
+                                                                    )
+                                                                    .then(() =>
+                                                                      f_embed.react(
+                                                                        "🇫"
+                                                                      )
+                                                                    )
+                                                                    .then(() =>
+                                                                      f_embed.react(
+                                                                        "🇬"
+                                                                      )
+                                                                    )
+                                                                    .then(() =>
+                                                                      f_embed.react(
+                                                                        "🇭"
+                                                                      )
+                                                                    )
+                                                                    .then(() =>
+                                                                      f_embed.react(
+                                                                        "🇮"
+                                                                      )
+                                                                    )
+                                                                    .then(() =>
+                                                                      f_embed.react(
+                                                                        "🇯"
+                                                                      )
+                                                                    )
+                                                                    .then(() =>
+                                                                      f_embed.react(
+                                                                        "🇰"
+                                                                      )
+                                                                    )
+                                                                    .catch(() =>
+                                                                      console.error(
+                                                                        "One of the emojis failed to react."
+                                                                      )
+                                                                    );
+
+                                                                  const filter =
+                                                                    (
+                                                                      reaction,
+                                                                      user
+                                                                    ) => {
+                                                                      return (
+                                                                        [
+                                                                          "🇦",
+                                                                          "🇧",
+                                                                          "🇨",
+                                                                          "🇩",
+                                                                          "🇪",
+                                                                          "🇫",
+                                                                          "🇬",
+                                                                          "🇭",
+                                                                          "🇮",
+                                                                          "🇯",
+                                                                          "🇰",
+                                                                        ].includes(
+                                                                          reaction
+                                                                            .emoji
+                                                                            .name
+                                                                        ) &&
+                                                                        user.id ===
+                                                                          message
+                                                                            .author
+                                                                            .id
+                                                                      );
+                                                                    };
+
+                                                                  f_embed
+                                                                    .awaitReactions(
+                                                                      filter,
+                                                                      {
+                                                                        max: 1,
+                                                                        time: 60000,
+                                                                        errors:
+                                                                          [
+                                                                            "time",
+                                                                          ],
+                                                                      }
+                                                                    )
+                                                                    .then(
+                                                                      (
+                                                                        collected
+                                                                      ) => {
+                                                                        const reaction =
+                                                                          collected.first();
+
+                                                                        // function expression that validates and applies a users role
+                                                                        let roleCheck =
+                                                                          (
+                                                                            roleName
+                                                                          ) => {
+                                                                            if (
+                                                                              memberData.roles.cache.some(
+                                                                                (
+                                                                                  role
+                                                                                ) =>
+                                                                                  role.name ===
+                                                                                  roleName
+                                                                              )
+                                                                            ) {
+                                                                              f_embed.reply(
+                                                                                "You already have that role!"
+                                                                              );
+
+                                                                              return false;
+                                                                            } else {
+                                                                              memberData.roles.add(
+                                                                                getRole(
+                                                                                  roleName,
+                                                                                  message
+                                                                                )
+                                                                              );
+
+                                                                              // grabbing role_name values from json file and looping thrrough all of them using a for in loop
+                                                                              for (var key in vs_json) {
+                                                                                if (
+                                                                                  vs_json.hasOwnProperty(
+                                                                                    key
+                                                                                  )
+                                                                                ) {
+                                                                                  console.log(
+                                                                                    key +
+                                                                                      " -> " +
+                                                                                      s_json[
+                                                                                        key
+                                                                                      ]
+                                                                                        .role_name
+                                                                                  );
+                                                                                  memberData.roles.remove(
+                                                                                    getRole(
+                                                                                      s_json[
+                                                                                        key
+                                                                                      ]
+                                                                                        .role_name
+                                                                                    )
+                                                                                  );
+                                                                                }
+                                                                              }
+
+                                                                              // logs the role name and only the role name
+                                                                              console.log(
+                                                                                getRole(
+                                                                                  roleName
+                                                                                )
+                                                                                  .name
+                                                                              );
+
+                                                                              User.findOneAndUpdate(
+                                                                                {
+                                                                                  discordID:
+                                                                                    message
+                                                                                      .author
+                                                                                      .id,
+                                                                                },
+                                                                                {
+                                                                                  $addToSet:
+                                                                                    {
+                                                                                      f_colors:
+                                                                                        getRole(
+                                                                                          roleName
+                                                                                        )
+                                                                                          .name,
+                                                                                    },
+                                                                                  $set: {
+                                                                                    s_colors:
+                                                                                      [],
+                                                                                  },
+                                                                                },
+                                                                                {
+                                                                                  upsert: true,
+                                                                                }
+                                                                              ).then(
+                                                                                () => {
+                                                                                  User.findOne(
+                                                                                    {
+                                                                                      discordID:
+                                                                                        message
+                                                                                          .author
+                                                                                          .id,
+                                                                                    },
+                                                                                    function callback(
+                                                                                      err,
+                                                                                      res
+                                                                                    ) {
+                                                                                      console.log(
+                                                                                        "s_color amount:",
+                                                                                        res
+                                                                                          .s_colors
+                                                                                          .length
+                                                                                      );
+
+                                                                                      if (
+                                                                                        err
+                                                                                      ) {
+                                                                                        console.log(
+                                                                                          err
+                                                                                        );
+                                                                                      }
+                                                                                    }
+                                                                                  );
+                                                                                }
+                                                                              );
+
+                                                                              f_embed.reply(
+                                                                                "Role successfully applied!"
+                                                                              );
+                                                                            }
+                                                                          };
+
+                                                                        switch (
+                                                                          reaction
+                                                                            .emoji
+                                                                            .name
+                                                                        ) {
+                                                                          case "🇦":
+                                                                            // checking if user already has the role. if not then apply
+                                                                            roleCheck(
+                                                                              "red"
+                                                                            );
+                                                                            break;
+                                                                          case "🇧":
+                                                                            roleCheck(
+                                                                              "orange"
+                                                                            );
+                                                                            break;
+                                                                          case "🇨":
+                                                                            roleCheck(
+                                                                              "yellow"
+                                                                            );
+                                                                            break;
+                                                                          case "🇩":
+                                                                            roleCheck(
+                                                                              "green"
+                                                                            );
+                                                                            break;
+                                                                          case "🇪":
+                                                                            roleCheck(
+                                                                              "blue"
+                                                                            );
+                                                                            break;
+                                                                          case "🇫":
+                                                                            roleCheck(
+                                                                              "cyan"
+                                                                            );
+                                                                            break;
+                                                                          case "🇬":
+                                                                            roleCheck(
+                                                                              "purple"
+                                                                            );
+                                                                            break;
+                                                                          case "🇭":
+                                                                            roleCheck(
+                                                                              "brown"
+                                                                            );
+                                                                            break;
+                                                                          case "🇮":
+                                                                            roleCheck(
+                                                                              "indigo"
+                                                                            );
+                                                                            break;
+                                                                          case "🇯":
+                                                                            roleCheck(
+                                                                              "violet"
+                                                                            );
+                                                                            break;
+                                                                          case "🇰":
+                                                                            roleCheck(
+                                                                              "pink"
+                                                                            );
+                                                                            break;
+                                                                          default:
+                                                                            f_embed.reply(
+                                                                              "Oops. Something went wrong!"
+                                                                            );
+                                                                        }
+                                                                      }
+                                                                    )
+                                                                    .catch(
+                                                                      (err) => {
+                                                                        console.log(
+                                                                          err
+                                                                        );
+                                                                        f_embed.reply(
+                                                                          "You didn't leave a reaction in time!"
+                                                                        );
+                                                                      }
+                                                                    );
+                                                                }
+                                                              );
+                                                          }
+
+                                                          if (err) {
+                                                            console.log(err);
+                                                          }
+                                                        }
+                                                      );
+                                                    });
+
+                                                    s_embed.reply(
+                                                      "Role successfully applied!"
+                                                    );
+                                                  }
+                                                };
+
+                                                switch (reaction.emoji.name) {
+                                                  case "🇦":
+                                                    // checking if user already has the role. if not then apply
+                                                    roleCheck("slightly red");
+                                                    break;
+                                                  case "🇧":
+                                                    roleCheck(
+                                                      "slightly orange"
+                                                    );
+                                                    break;
+                                                  case "🇨":
+                                                    roleCheck(
+                                                      "slightly yellow"
+                                                    );
+                                                    break;
+                                                  case "🇩":
+                                                    roleCheck("slightly green");
+                                                    break;
+                                                  case "🇪":
+                                                    roleCheck("slightly blue");
+                                                    break;
+                                                  case "🇫":
+                                                    roleCheck("slightly cyan");
+                                                    break;
+                                                  case "🇬":
+                                                    roleCheck(
+                                                      "slightly purple"
+                                                    );
+                                                    break;
+                                                  case "🇭":
+                                                    roleCheck("slightly brown");
+                                                    break;
+                                                  case "🇮":
+                                                    roleCheck(
+                                                      "slightly indigo"
+                                                    );
+                                                    break;
+                                                  case "🇯":
+                                                    roleCheck(
+                                                      "slightly violet"
+                                                    );
+                                                    break;
+                                                  case "🇰":
+                                                    roleCheck("slightly pink");
+                                                    break;
+                                                  default:
+                                                    s_embed.reply(
+                                                      "Oops. Something went wrong!"
+                                                    );
+                                                }
+                                              })
+                                              .catch((err) => {
+                                                console.log(err);
+                                                s_embed.reply(
+                                                  "You didn't leave a reaction in time!"
+                                                );
+                                              });
+                                          });
+                                      }
+                                      if (err) {
+                                        console.log(err);
+                                      }
+                                    }
+                                  );
+                                });
+                                /*  - checking if the user reaches the max amount of vs_colors after applying the role through the embed
+                                  - if the user has 11 when applying their role, run another embed prompting the user that they have an option to trade in all of their 
+                                     very slight colors for one slight color.
+                                  - let user know that they can run the command again anytime they please if they want a slight color in the future
+                                */
+
+                                embed.reply("Role successfully applied!");
+                              }
+                            };
+
+                            switch (reaction.emoji.name) {
+                              case "🇦":
+                                // checking if user already has the role. if not then apply
+                                roleCheck("very slightly red");
+                                break;
+                              case "🇧":
+                                roleCheck("very slightly orange");
+                                break;
+                              case "🇨":
+                                roleCheck("very slightly yellow");
+                                break;
+                              case "🇩":
+                                roleCheck("very slightly green");
+                                break;
+                              case "🇪":
+                                roleCheck("very slightly blue");
+                                break;
+                              case "🇫":
+                                roleCheck("very slightly cyan");
+                                break;
+                              case "🇬":
+                                roleCheck("very slightly purple");
+                                break;
+                              case "🇭":
+                                roleCheck("very slightly brown");
+                                break;
+                              case "🇮":
+                                roleCheck("very slightly indigo");
+                                break;
+                              case "🇯":
+                                roleCheck("very slightly violet");
+                                break;
+                              case "🇰":
+                                roleCheck("very slightly pink");
+                                break;
+                              default:
+                                embed.reply("Oops. Something went wrong!");
+                            }
+                          })
+                          .catch((err) => {
+                            console.log(err);
+                            embed.reply("You didn't leave a reaction in time!");
+                          });
+                      });
+                    }
+
+                    // if very slight color length is > 10
+                    User.findOne(
+                      { discordID: message.author.id },
+                      function callback(err, res) {
+                        console.log(
+                          "vs_color initial amount:",
+                          res.vs_colors.length
+                        );
+
+                        if (res.vs_colors.length > 10) {
+                          message.channel
+                            .send(slightColorEmbed)
+                            .then((s_embed) => {
+                              s_embed.delete({ timeout: 60000 });
+                              s_embed
+                                .react("🇦")
+                                .then(() => s_embed.react("🇧"))
+                                .then(() => s_embed.react("🇨"))
+                                .then(() => s_embed.react("🇩"))
+                                .then(() => s_embed.react("🇪"))
+                                .then(() => s_embed.react("🇫"))
+                                .then(() => s_embed.react("🇬"))
+                                .then(() => s_embed.react("🇭"))
+                                .then(() => s_embed.react("🇮"))
+                                .then(() => s_embed.react("🇯"))
+                                .then(() => s_embed.react("🇰"))
+                                .catch(() =>
+                                  console.error(
+                                    "One of the emojis failed to react."
+                                  )
+                                );
+
+                              const filter = (reaction, user) => {
+                                return (
+                                  [
+                                    "🇦",
+                                    "🇧",
+                                    "🇨",
+                                    "🇩",
+                                    "🇪",
+                                    "🇫",
+                                    "🇬",
+                                    "🇭",
+                                    "🇮",
+                                    "🇯",
+                                    "🇰",
+                                  ].includes(reaction.emoji.name) &&
+                                  user.id === message.author.id
+                                );
+                              };
+
+                              s_embed
+                                .awaitReactions(filter, {
+                                  max: 1,
+                                  time: 60000,
+                                  errors: ["time"],
+                                })
+                                .then((collected) => {
+                                  const reaction = collected.first();
+
+                                  // function expression that validates and applies a users role
+                                  let roleCheck = (roleName) => {
+                                    if (
+                                      memberData.roles.cache.some(
+                                        (role) => role.name === roleName
+                                      )
+                                    ) {
+                                      s_embed.reply(
+                                        "You already have that role!"
+                                      );
+
+                                      return false;
+                                    } else {
+                                      memberData.roles.add(
+                                        getRole(roleName, message)
+                                      );
+
+                                      // grabbing role_name values from json file and looping thrrough all of them using a for in loop
+                                      for (var key in vs_json) {
+                                        if (vs_json.hasOwnProperty(key)) {
+                                          console.log(
+                                            key +
+                                              " -> " +
+                                              vs_json[key].role_name
+                                          );
+                                          memberData.roles.remove(
+                                            getRole(vs_json[key].role_name)
+                                          );
+                                        }
+                                      }
+
+                                      // logs the role name and only the role name
+                                      console.log(getRole(roleName).name);
+
+                                      User.findOneAndUpdate(
+                                        {
+                                          discordID: message.author.id,
+                                        },
+                                        {
+                                          $addToSet: {
+                                            s_colors: getRole(roleName).name,
+                                          },
+                                          $set: {
+                                            vs_colors: [],
+                                          },
+                                        },
+                                        { upsert: true }
+                                      ).then(() => {
+                                        User.findOne(
+                                          {
+                                            discordID: message.author.id,
+                                          },
+                                          function callback(err, res) {
+                                            console.log(
+                                              "s_color amount:",
+                                              res.s_colors.length
+                                            );
+
+                                            if (res.s_colors.length > 10) {
+                                              message.channel
+                                                .send(fullColorEmbed)
+                                                .then((f_embed) => {
+                                                  f_embed.delete({
+                                                    timeout: 60000,
+                                                  });
+                                                  f_embed
+                                                    .react("🇦")
+                                                    .then(() =>
+                                                      f_embed.react("🇧")
+                                                    )
+                                                    .then(() =>
+                                                      f_embed.react("🇨")
+                                                    )
+                                                    .then(() =>
+                                                      f_embed.react("🇩")
+                                                    )
+                                                    .then(() =>
+                                                      f_embed.react("🇪")
+                                                    )
+                                                    .then(() =>
+                                                      f_embed.react("🇫")
+                                                    )
+                                                    .then(() =>
+                                                      f_embed.react("🇬")
+                                                    )
+                                                    .then(() =>
+                                                      f_embed.react("🇭")
+                                                    )
+                                                    .then(() =>
+                                                      f_embed.react("🇮")
+                                                    )
+                                                    .then(() =>
+                                                      f_embed.react("🇯")
+                                                    )
+                                                    .then(() =>
+                                                      f_embed.react("🇰")
+                                                    )
+                                                    .catch(() =>
+                                                      console.error(
+                                                        "One of the emojis failed to react."
+                                                      )
+                                                    );
+
+                                                  const filter = (
+                                                    reaction,
+                                                    user
+                                                  ) => {
+                                                    return (
+                                                      [
+                                                        "🇦",
+                                                        "🇧",
+                                                        "🇨",
+                                                        "🇩",
+                                                        "🇪",
+                                                        "🇫",
+                                                        "🇬",
+                                                        "🇭",
+                                                        "🇮",
+                                                        "🇯",
+                                                        "🇰",
+                                                      ].includes(
+                                                        reaction.emoji.name
+                                                      ) &&
+                                                      user.id ===
+                                                        message.author.id
+                                                    );
+                                                  };
+
+                                                  f_embed
+                                                    .awaitReactions(filter, {
+                                                      max: 1,
+                                                      time: 60000,
+                                                      errors: ["time"],
+                                                    })
+                                                    .then((collected) => {
+                                                      const reaction =
+                                                        collected.first();
+
+                                                      // function expression that validates and applies a users role
+                                                      let roleCheck = (
+                                                        roleName
+                                                      ) => {
+                                                        if (
+                                                          memberData.roles.cache.some(
+                                                            (role) =>
+                                                              role.name ===
+                                                              roleName
+                                                          )
+                                                        ) {
+                                                          f_embed.reply(
+                                                            "You already have that role!"
+                                                          );
+
+                                                          return false;
+                                                        } else {
+                                                          memberData.roles.add(
+                                                            getRole(
+                                                              roleName,
+                                                              message
+                                                            )
+                                                          );
+
+                                                          // grabbing role_name values from json file and looping thrrough all of them using a for in loop
+                                                          for (var key in vs_json) {
+                                                            if (
+                                                              vs_json.hasOwnProperty(
+                                                                key
+                                                              )
+                                                            ) {
+                                                              console.log(
+                                                                key +
+                                                                  " -> " +
+                                                                  s_json[key]
+                                                                    .role_name
+                                                              );
+                                                              memberData.roles.remove(
+                                                                getRole(
+                                                                  s_json[key]
+                                                                    .role_name
+                                                                )
+                                                              );
+                                                            }
+                                                          }
+
+                                                          // logs the role name and only the role name
+                                                          console.log(
+                                                            getRole(roleName)
+                                                              .name
+                                                          );
+
+                                                          User.findOneAndUpdate(
+                                                            {
+                                                              discordID:
+                                                                message.author
+                                                                  .id,
+                                                            },
+                                                            {
+                                                              $addToSet: {
+                                                                f_colors:
+                                                                  getRole(
+                                                                    roleName
+                                                                  ).name,
+                                                              },
+                                                              $set: {
+                                                                s_colors: [],
+                                                              },
+                                                            },
+                                                            {
+                                                              upsert: true,
+                                                            }
+                                                          ).then(() => {
+                                                            User.findOne(
+                                                              {
+                                                                discordID:
+                                                                  message.author
+                                                                    .id,
+                                                              },
+                                                              function callback(
+                                                                err,
+                                                                res
+                                                              ) {
+                                                                console.log(
+                                                                  "s_color amount:",
+                                                                  res.s_colors
+                                                                    .length
+                                                                );
+
+                                                                if (err) {
+                                                                  console.log(
+                                                                    err
+                                                                  );
+                                                                }
+                                                              }
+                                                            );
+                                                          });
+
+                                                          f_embed.reply(
+                                                            "Role successfully applied!"
+                                                          );
+                                                        }
+                                                      };
+
+                                                      switch (
+                                                        reaction.emoji.name
+                                                      ) {
+                                                        case "🇦":
+                                                          // checking if user already has the role. if not then apply
+                                                          roleCheck("red");
+                                                          break;
+                                                        case "🇧":
+                                                          roleCheck("orange");
+                                                          break;
+                                                        case "🇨":
+                                                          roleCheck("yellow");
+                                                          break;
+                                                        case "🇩":
+                                                          roleCheck("green");
+                                                          break;
+                                                        case "🇪":
+                                                          roleCheck("blue");
+                                                          break;
+                                                        case "🇫":
+                                                          roleCheck("cyan");
+                                                          break;
+                                                        case "🇬":
+                                                          roleCheck("purple");
+                                                          break;
+                                                        case "🇭":
+                                                          roleCheck("brown");
+                                                          break;
+                                                        case "🇮":
+                                                          roleCheck("indigo");
+                                                          break;
+                                                        case "🇯":
+                                                          roleCheck("violet");
+                                                          break;
+                                                        case "🇰":
+                                                          roleCheck("pink");
+                                                          break;
+                                                        default:
+                                                          f_embed.reply(
+                                                            "Oops. Something went wrong!"
+                                                          );
+                                                      }
+                                                    })
+                                                    .catch((err) => {
+                                                      console.log(err);
+                                                      f_embed.reply(
+                                                        "You didn't leave a reaction in time!"
+                                                      );
+                                                    });
+                                                });
+                                            }
+
+                                            if (err) {
+                                              console.log(err);
+                                            }
+                                          }
+                                        );
+                                      });
+
+                                      s_embed.reply(
+                                        "Role successfully applied!"
+                                      );
+                                    }
+                                  };
+
+                                  switch (reaction.emoji.name) {
+                                    case "🇦":
+                                      // checking if user already has the role. if not then apply
+                                      roleCheck("slightly red");
+                                      break;
+                                    case "🇧":
+                                      roleCheck("slightly orange");
+                                      break;
+                                    case "🇨":
+                                      roleCheck("slightly yellow");
+                                      break;
+                                    case "🇩":
+                                      roleCheck("slightly green");
+                                      break;
+                                    case "🇪":
+                                      roleCheck("slightly blue");
+                                      break;
+                                    case "🇫":
+                                      roleCheck("slightly cyan");
+                                      break;
+                                    case "🇬":
+                                      roleCheck("slightly purple");
+                                      break;
+                                    case "🇭":
+                                      roleCheck("slightly brown");
+                                      break;
+                                    case "🇮":
+                                      roleCheck("slightly indigo");
+                                      break;
+                                    case "🇯":
+                                      roleCheck("slightly violet");
+                                      break;
+                                    case "🇰":
+                                      roleCheck("slightly pink");
+                                      break;
+                                    default:
+                                      s_embed.reply(
+                                        "Oops. Something went wrong!"
+                                      );
+                                  }
+                                })
+                                .catch((err) => {
+                                  console.log(err);
+                                  s_embed.reply(
+                                    "You didn't leave a reaction in time!"
+                                  );
+                                });
+                            });
+                        }
+                      }
+                    );
+
+                    //  if slight color length is > 10 (maxed out)
+                    User.findOne(
+                      {
+                        discordID: message.author.id,
+                      },
+                      function callback(err, res) {
+                        console.log(
+                          "s_color initial amount check:",
+                          res.s_colors.length
+                        );
+
+                        if (res.s_colors.length > 10) {
+                          message.channel
+                            .send(fullColorEmbed)
+                            .then((f_embed) => {
+                              f_embed.delete({
+                                timeout: 60000,
+                              });
+                              f_embed
+                                .react("🇦")
+                                .then(() => f_embed.react("🇧"))
+                                .then(() => f_embed.react("🇨"))
+                                .then(() => f_embed.react("🇩"))
+                                .then(() => f_embed.react("🇪"))
+                                .then(() => f_embed.react("🇫"))
+                                .then(() => f_embed.react("🇬"))
+                                .then(() => f_embed.react("🇭"))
+                                .then(() => f_embed.react("🇮"))
+                                .then(() => f_embed.react("🇯"))
+                                .then(() => f_embed.react("🇰"))
+                                .catch(() =>
+                                  console.error(
+                                    "One of the emojis failed to react."
+                                  )
+                                );
+
+                              const filter = (reaction, user) => {
+                                return (
+                                  [
+                                    "🇦",
+                                    "🇧",
+                                    "🇨",
+                                    "🇩",
+                                    "🇪",
+                                    "🇫",
+                                    "🇬",
+                                    "🇭",
+                                    "🇮",
+                                    "🇯",
+                                    "🇰",
+                                  ].includes(reaction.emoji.name) &&
+                                  user.id === message.author.id
+                                );
+                              };
+
+                              f_embed
+                                .awaitReactions(filter, {
+                                  max: 1,
+                                  time: 60000,
+                                  errors: ["time"],
+                                })
+                                .then((collected) => {
+                                  const reaction = collected.first();
+
+                                  // function expression that validates and applies a users role
+                                  let roleCheck = (roleName) => {
+                                    if (
+                                      memberData.roles.cache.some(
+                                        (role) => role.name === roleName
+                                      )
+                                    ) {
+                                      f_embed.reply(
+                                        "You already have that role!"
+                                      );
+
+                                      return false;
+                                    } else {
+                                      memberData.roles.add(
+                                        getRole(roleName, message)
+                                      );
+
+                                      // grabbing role_name values from json file and looping thrrough all of them using a for in loop
+                                      for (var key in vs_json) {
+                                        if (vs_json.hasOwnProperty(key)) {
+                                          console.log(
+                                            key + " -> " + s_json[key].role_name
+                                          );
+                                          memberData.roles.remove(
+                                            getRole(s_json[key].role_name)
+                                          );
+                                        }
+                                      }
+
+                                      // logs the role name and only the role name
+                                      console.log(getRole(roleName).name);
+
+                                      User.findOneAndUpdate(
+                                        {
+                                          discordID: message.author.id,
+                                        },
+                                        {
+                                          $addToSet: {
+                                            f_colors: getRole(roleName).name,
+                                          },
+                                          $set: {
+                                            s_colors: [],
+                                          },
+                                        },
+                                        {
+                                          upsert: true,
+                                        }
+                                      ).then(() => {
+                                        User.findOne(
+                                          {
+                                            discordID: message.author.id,
+                                          },
+                                          function callback(err, res) {
+                                            console.log(
+                                              "s_color amount:",
+                                              res.s_colors.length
+                                            );
+
+                                            if (err) {
+                                              console.log(err);
+                                            }
+                                          }
+                                        );
+                                      });
+
+                                      f_embed.reply(
+                                        "Role successfully applied!"
+                                      );
+                                    }
+                                  };
+
+                                  switch (reaction.emoji.name) {
+                                    case "🇦":
+                                      // checking if user already has the role. if not then apply
+                                      roleCheck("red");
+                                      break;
+                                    case "🇧":
+                                      roleCheck("orange");
+                                      break;
+                                    case "🇨":
+                                      roleCheck("yellow");
+                                      break;
+                                    case "🇩":
+                                      roleCheck("green");
+                                      break;
+                                    case "🇪":
+                                      roleCheck("blue");
+                                      break;
+                                    case "🇫":
+                                      roleCheck("cyan");
+                                      break;
+                                    case "🇬":
+                                      roleCheck("purple");
+                                      break;
+                                    case "🇭":
+                                      roleCheck("brown");
+                                      break;
+                                    case "🇮":
+                                      roleCheck("indigo");
+                                      break;
+                                    case "🇯":
+                                      roleCheck("violet");
+                                      break;
+                                    case "🇰":
+                                      roleCheck("pink");
+                                      break;
+                                    default:
+                                      f_embed.reply(
+                                        "Oops. Something went wrong!"
+                                      );
+                                  }
+                                })
+                                .catch((err) => {
+                                  console.log(err);
+                                  f_embed.reply(
+                                    "You didn't leave a reaction in time!"
+                                  );
+                                });
+                            });
                         }
 
-                        break;
-                      case "🇧":
-                        memberData.roles.add(
-                          getRole("very slightly orange", message)
+                        if (err) {
+                          console.log(err);
+                        }
+                      }
+                    );
+
+                    // if all full colors have been achieved:
+                    User.findOne(
+                      {
+                        discordID: message.author.id,
+                      },
+                      function callback(err, res) {
+                        console.log(
+                          "f_color initial amount check:",
+                          res.s_colors.length
                         );
-                        embed.reply("Role successfully applied!");
-                        break;
-                      case "🇨":
-                        memberData.roles.add(
-                          getRole("very slightly yellow", message)
-                        );
-                        embed.reply("Role successfully applied!");
-                        break;
-                      case "🇩":
-                        memberData.roles.add(
-                          getRole("very slightly green", message)
-                        );
-                        embed.reply("Role successfully applied!");
-                        break;
-                      case "🇪":
-                        memberData.roles.add(
-                          getRole("very slightly blue", message)
-                        );
-                        embed.reply("Role successfully applied!");
-                        break;
-                      case "🇫":
-                        memberData.roles.add(
-                          getRole("very slightly cyan", message)
-                        );
-                        embed.reply("Role successfully applied!");
-                        break;
-                      case "🇬":
-                        memberData.roles.add(
-                          getRole("very slightly purple", message)
-                        );
-                        embed.reply("Role successfully applied!");
-                        break;
-                      case "🇭":
-                        memberData.roles.add(
-                          getRole("very slightly brown", message)
-                        );
-                        embed.reply("Role successfully applied!");
-                        break;
-                      case "🇮":
-                        memberData.roles.add(
-                          getRole("very slightly indigo", message)
-                        );
-                        embed.reply("Role successfully applied!");
-                        break;
-                      case "🇯":
-                        memberData.roles.add(
-                          getRole("very slightly violet", message)
-                        );
-                        embed.reply("Role successfully applied!");
-                        break;
-                      case "🇰":
-                        memberData.roles.add(
-                          getRole("very slightly pink", message)
-                        );
-                        embed.reply("Role successfully applied!");
-                        break;
-                      default:
-                        embed.reply("Oops. Something went wrong!");
-                    }
-                  })
-                  .catch(() => {
-                    embed.reply("You didn't leave a reaction in time!");
-                  });
+
+                        if (res.f_colors.length > 10) {
+                          message.channel.send(congratsEmbed);
+                        }
+                      }
+                    );
+                  }
+                );
               });
 
               // after the color role is applied to user in discord, the user's channel point reward is set to FULFILLED
@@ -303,30 +1539,15 @@ module.exports = {
                   body: JSON.stringify({ status: "FULFILLED" }),
                 }
               );
-              break;
-              // send success embed client-side
+              // return true if the provided twitchName is valid
+              return true;
             }
-
-            // if (reward[i].user_name != twitchName) {
-            //   message.channel.send(
-            //     "You have no pending color role redemptions. Redeem the color channel point reward then try again."
-            //   );
-            // }
-            // else if (reward[i].user_name != twitchName) {
-            //   const nameError = new Discord.MessageEmbed()
-            //     .setColor("#FF0000")
-            //     .setTitle("Uh oh!")
-            //     .setDescription(
-            //       "You have not redeemed 'a very sligtly colored discored role' channel reward.\n\nYou must first redeem the reward for you role to be applied!"
-            //     )
-            //     .setThumbnail("https://i.imgur.com/I6hxLXI.png");
-            //   message.channel.send(nameError);
-            //   break;
-            // }
           }
-          return;
+          // else return test();
+          return inValid();
         };
-        return wrapper();
+
+        return vsEmbed();
       });
   },
 };

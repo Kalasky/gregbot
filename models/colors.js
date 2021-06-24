@@ -5,22 +5,22 @@ const colorSchema = new mongoose.Schema(
     rank: {
       type: String,
       trim: true,
-      required: true,
+      // required: true,
     },
     vs_colors: {
       type: Array,
       trim: true,
-      required: true,
+      // required: true,
     },
     s_colors: {
       type: Array,
       trim: true,
-      required: true,
+      // required: true,
     },
     f_colors: {
       type: Array,
       trim: true,
-      required: true,
+      // required: true,
     },
     blocked_colors: {
       type: Array,
