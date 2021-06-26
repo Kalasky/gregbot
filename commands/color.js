@@ -154,6 +154,23 @@ module.exports = {
       console.log("fetch response", response.json());
     }
 
+    async function fulfillReward() {
+      await fetch(
+        `https://api.twitch.tv/helix/channel_points/custom_rewards/redemptions?broadcaster_id=58606718&reward_id=08d5e2d9-ddd7-4082-bc78-39b06b35cd68&id=${reward[i].id}`,
+        {
+          method: "PATCH",
+          headers: {
+            "client-id": process.env.CLIENT_ID,
+            Authorization: `Bearer ${process.env.ACCESS_TOKEN}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            status: "FULFILLED",
+          }),
+        }
+      );
+    }
+
     fetch(
       // fetch all custom channel point rewards
       // https://api.twitch.tv/helix/channel_points/custom_rewards?broadcaster_id=58606718&status=UNFULFILLED
@@ -682,6 +699,10 @@ module.exports = {
                                                                                 }
                                                                               );
 
+                                                                              // after the color role is applied to user in discord,
+                                                                              // set user's channel point reward is set to FULFILLED
+                                                                              fulfillReward();
+
                                                                               f_embed.reply(
                                                                                 "Role successfully applied!"
                                                                               );
@@ -777,6 +798,10 @@ module.exports = {
                                                       );
                                                     });
 
+                                                    // after the color role is applied to user in discord,
+                                                    // set user's channel point reward is set to FULFILLED
+                                                    fulfillReward();
+
                                                     s_embed.reply(
                                                       "Role successfully applied!"
                                                     );
@@ -853,6 +878,10 @@ module.exports = {
                                      very slight colors for one slight color.
                                   - let user know that they can run the command again anytime they please if they want a slight color in the future
                                 */
+
+                                // after the color role is applied to user in discord,
+                                // set user's channel point reward is set to FULFILLED
+                                fulfillReward();
 
                                 embed.reply("Role successfully applied!");
                               }
@@ -1209,6 +1238,10 @@ module.exports = {
                                                             );
                                                           });
 
+                                                          // after the color role is applied to user in discord,
+                                                          // set user's channel point reward is set to FULFILLED
+                                                          fulfillReward();
+
                                                           f_embed.reply(
                                                             "Role successfully applied!"
                                                           );
@@ -1273,6 +1306,10 @@ module.exports = {
                                           }
                                         );
                                       });
+
+                                      // after the color role is applied to user in discord,
+                                      // set user's channel point reward is set to FULFILLED
+                                      fulfillReward();
 
                                       s_embed.reply(
                                         "Role successfully applied!"
@@ -1467,6 +1504,10 @@ module.exports = {
                                         );
                                       });
 
+                                      // after the color role is applied to user in discord,
+                                      // set user's channel point reward is set to FULFILLED
+                                      fulfillReward();
+
                                       f_embed.reply(
                                         "Role successfully applied!"
                                       );
@@ -1549,19 +1590,6 @@ module.exports = {
                 );
               });
 
-              // after the color role is applied to user in discord, the user's channel point reward is set to FULFILLED
-              fetch(
-                `https://api.twitch.tv/helix/channel_points/custom_rewards/redemptions?broadcaster_id=58606718&reward_id=08d5e2d9-ddd7-4082-bc78-39b06b35cd68&id=${reward[i].id}`,
-                {
-                  method: "PATCH",
-                  headers: {
-                    "client-id": process.env.CLIENT_ID,
-                    Authorization: `Bearer ${process.env.ACCESS_TOKEN}`,
-                    "Content-Type": "application/json",
-                  },
-                  body: JSON.stringify({ status: "FULFILLED" }),
-                }
-              );
               // return true if the provided twitchName is valid
               return true;
             }
