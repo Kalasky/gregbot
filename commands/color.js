@@ -35,7 +35,7 @@ module.exports = {
     // very slight color (vs_color) embed
     const initialPromptEmbed = new Discord.MessageEmbed()
       .setColor("#00C5CD")
-      .setTitle("Pick a color!")
+      .setTitle(`Pick a color ${message.author.username}!`)
       .setDescription(
         "If you have redeemed the color channel reward more than once, run this command again."
       )
@@ -66,7 +66,7 @@ module.exports = {
     // slight color (s_color) embed
     const slightColorEmbed = new Discord.MessageEmbed()
       .setColor("#00C5CD")
-      .setTitle("Pick a color!")
+      .setTitle(`Pick a color ${message.author.username}!`)
       .setDescription(
         "You have obtained all of the very slight colors!\nTrade in all of your very slight colors by selecting a slight color below.\nIf you would like to choose a slight color some other time feel free to ignore this prompt, it will end automatically."
       )
@@ -89,7 +89,7 @@ module.exports = {
     // full color (f_color) embed
     const fullColorEmbed = new Discord.MessageEmbed()
       .setColor("#00C5CD")
-      .setTitle("Pick a color!")
+      .setTitle(`Pick a color ${message.author.username}!`)
       .setDescription(
         "You have obtained all of the slight colors!\nTrade in all of your slight colors by selecting a slight color below.\nIf you would like to choose a full color some other time feel free to ignore this prompt, it will end automatically."
       )
@@ -114,7 +114,7 @@ module.exports = {
 
     const congratsEmbed = new Discord.MessageEmbed()
       .setColor("#FF69B4")
-      .setTitle("Congratulations!")
+      .setTitle(`Congratulations ${message.author.username}!`)
       .setDescription(
         "You have obtained all of the full colors! The rainbow is all yours.\n\nEnjoy this rainbow unicorn!"
       )
@@ -124,7 +124,7 @@ module.exports = {
 
     const nameError = new Discord.MessageEmbed()
       .setColor("#FF0000")
-      .setTitle("Uh oh!")
+      .setTitle(`Uh oh, ${message.author.username}!`)
       .setDescription(
         "First make sure your capitilization and spelling is correct.\n\nIf your name is spelled correctly you have not redeemed 'a very slightly colored discored role' channel reward.\n\nYou must first redeem the reward to execute this command!"
       )
@@ -1186,10 +1186,19 @@ module.exports = {
                                                                 res
                                                               ) {
                                                                 console.log(
-                                                                  "s_color amount:",
-                                                                  res.s_colors
+                                                                  "f_color amount:",
+                                                                  res.f_colors
                                                                     .length
                                                                 );
+
+                                                                if (
+                                                                  res.f_colors
+                                                                    .length > 10
+                                                                ) {
+                                                                  message.channel.send(
+                                                                    congratsEmbed
+                                                                  );
+                                                                }
 
                                                                 if (err) {
                                                                   console.log(
@@ -1441,9 +1450,15 @@ module.exports = {
                                           },
                                           function callback(err, res) {
                                             console.log(
-                                              "s_color amount:",
-                                              res.s_colors.length
+                                              "f_color amount:",
+                                              res.f_colors.length
                                             );
+
+                                            if (res.f_colors.length > 10) {
+                                              message.channel.send(
+                                                congratsEmbed
+                                              );
+                                            }
 
                                             if (err) {
                                               console.log(err);
