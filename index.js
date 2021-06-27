@@ -208,7 +208,10 @@ client.on("message", (channel, user, message, self) => {
 
         switch (message) {
           case ">kills":
-            client.action("GregTheBoomer", `Greg has ${kills} kills in Warzone`);
+            client.action(
+              "GregTheBoomer",
+              `Greg has ${kills} kills in Warzone`
+            );
             break;
           case ">wins":
             client.action("GregTheBoomer", `Greg has ${wins} wins in Warzone`);
@@ -244,7 +247,6 @@ client.on("message", (channel, user, message, self) => {
             );
           case ">commands":
             client.action(
-
               "GregTheBoomer",
 
               `Here's a list of my commands: https://pastebin.com/V8Uv4AcH`
@@ -252,14 +254,12 @@ client.on("message", (channel, user, message, self) => {
             break;
           case ">help":
             client.action(
-
               "GregTheBoomer",
 
               `Here's a list of my commands: https://pastebin.com/V8Uv4AcH`
             );
             break;
           case ">rapidchess":
-
             chessAPI.getPlayerStats("GregTheBoomer").then(
               function (res) {
                 let rapidWin = res.body.chess_rapid.record.win;
@@ -268,7 +268,6 @@ client.on("message", (channel, user, message, self) => {
                 let rapidBestRating = res.body.chess_rapid.best.rating;
                 let rapidCurrentRating = res.body.chess_rapid.last.rating;
                 client.action(
-
                   "GregTheBoomer",
 
                   `Greg's stats in Rapid: Wins: ${rapidWin} Losses: ${rapidLoss} Draws: ${rapidDraw} Current Elo: ${rapidCurrentRating} Best Elo: ${rapidBestRating}`
@@ -278,14 +277,11 @@ client.on("message", (channel, user, message, self) => {
                 console.log(err);
 
                 client.action("GregTheBoomer", `${err}`);
-
               }
             );
             break;
           case ">blitzchess":
-
             chessAPI.getPlayerStats("GregTheBoomer").then(
-
               function (res) {
                 let blitzWin = res.body.chess_blitz.record.win;
                 let blitzLoss = res.body.chess_blitz.record.loss;
@@ -293,7 +289,6 @@ client.on("message", (channel, user, message, self) => {
                 let blitzBestRating = res.body.chess_blitz.best.rating;
                 let blitzCurrentRating = res.body.chess_blitz.last.rating;
                 client.action(
-
                   "GregTheBoomer",
 
                   `Greg's stats in Blitz: Wins: ${blitzWin} Losses: ${blitzLoss} Draws: ${blitzDraw} Current Elo: ${blitzCurrentRating} Best Elo: ${blitzBestRating}`
@@ -303,7 +298,6 @@ client.on("message", (channel, user, message, self) => {
                 console.log(err);
 
                 client.action("GregTheBoomer", `${err}`);
-
               }
             );
             break;
@@ -323,7 +317,6 @@ client.on("message", (channel, user, message, self) => {
                 let rapidBestRating = res.body.chess_rapid.best.rating;
                 let rapidCurrentRating = res.body.chess_rapid.last.rating;
                 client.action(
-
                   "GregTheBoomer",
 
                   `${msg[1]} Blitz stats: Wins: ${blitzWin} Losses: ${blitzLoss} Draws: ${blitzDraw} Current Elo: ${blitzCurrentRating} Best Elo: ${blitzBestRating} ---- ${msg[1]} Rapid stats: Wins: ${rapidWin} Losses: ${rapidLoss} Draws: ${rapidDraw} Current Elo: ${rapidCurrentRating} Best Elo: ${rapidBestRating}`
@@ -332,7 +325,6 @@ client.on("message", (channel, user, message, self) => {
               function (err) {
                 console.log(err);
                 client.action(
-
                   "GregTheBoomer",
 
                   `${err} - Make sure the user exists and there is no misspelling`
@@ -348,7 +340,6 @@ client.on("message", (channel, user, message, self) => {
         }
       })
       .catch((err) => {
-
         client.action("GregTheBoomer", `Error: ${err}`);
       });
   });

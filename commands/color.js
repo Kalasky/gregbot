@@ -154,23 +154,6 @@ module.exports = {
       console.log("fetch response", response.json());
     }
 
-    async function fulfillReward() {
-      await fetch(
-        `https://api.twitch.tv/helix/channel_points/custom_rewards/redemptions?broadcaster_id=58606718&reward_id=08d5e2d9-ddd7-4082-bc78-39b06b35cd68&id=${reward[i].id}`,
-        {
-          method: "PATCH",
-          headers: {
-            "client-id": process.env.CLIENT_ID,
-            Authorization: `Bearer ${process.env.ACCESS_TOKEN}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            status: "FULFILLED",
-          }),
-        }
-      );
-    }
-
     fetch(
       // fetch all custom channel point rewards
       // https://api.twitch.tv/helix/channel_points/custom_rewards?broadcaster_id=58606718&status=UNFULFILLED
@@ -205,6 +188,22 @@ module.exports = {
               message.author.id
             );
 
+            async function fulfillReward() {
+              await fetch(
+                `https://api.twitch.tv/helix/channel_points/custom_rewards/redemptions?broadcaster_id=58606718&reward_id=08d5e2d9-ddd7-4082-bc78-39b06b35cd68&id=${reward[i].id}`,
+                {
+                  method: "PATCH",
+                  headers: {
+                    "client-id": process.env.CLIENT_ID,
+                    Authorization: `Bearer ${process.env.ACCESS_TOKEN}`,
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({
+                    status: "FULFILLED",
+                  }),
+                }
+              );
+            }
             // grabs all server roles
             // console.log(memberData.roles.member.guild.roles);
 
