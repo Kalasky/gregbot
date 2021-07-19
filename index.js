@@ -1,10 +1,17 @@
 require("dotenv").config();
+require("./strategies/discord");
+const express = require("express");
+const passport = require("passport");
+const app = express();
+const routes = require("./routes");
 const tmi = require("tmi.js");
 const API = require("call-of-duty-api")();
 const { prefix } = require("./config.json");
 const ChessWebAPI = require("chess-web-api");
 const chessAPI = new ChessWebAPI();
 const mongoose = require("mongoose");
+const session = require("express-session");
+const Store = require("connect-mongo");
 const cron = require("node-cron");
 
 // let color = require("./commands/color");  -- color.execute(message);
@@ -106,62 +113,6 @@ client.on("connected", (address, port) => {
 });
 
 var fetch = require("node-fetch");
-// dClient.on("ready", () => {
-// fetch(
-//   // fetch all custom channel point rewards
-//   // https://api.twitch.tv/helix/channel_points/custom_rewards?broadcaster_id=58606718&status=UNFULFILLED
-
-//   // lists custom reward redemptions for a specific reward
-//   // https://api.twitch.tv/helix/channel_points/custom_rewards/redemptions?broadcaster_id=58606718&reward_id=9591e009-bdc6-434d-aa05-3481b4746b46&status=UNFULFILLED
-
-//   "https://api.twitch.tv/helix/channel_points/custom_rewards/redemptions?broadcaster_id=58606718&reward_id=08d5e2d9-ddd7-4082-bc78-39b06b35cd68&status=UNFULFILLED",
-//   {
-//     headers: {
-//       "client-id": process.env.CLIENT_ID,
-//       Authorization: `Bearer ${process.env.ACCESS_TOKEN}`,
-//     },
-//   }
-// )
-//   .then((res) => res.json())
-//   .then((data) => {
-//     // targeting hard coded guild ID
-
-//     let reward = data.data;
-//     console.log("reward:", reward);
-
-//     /*
-//       - running through all created UNFULFILLED channel reward redemption and grabbing every user_input field
-//       - once logic runs through UNFULFILLED rewards, mark rewards as FULFILLED
-//       */
-//     // reward.forEach((rewards) => console.log(rewards.user_input));
-
-//     // const guild = dClient.guild.cache.get("455697668975362049");
-//     // var role = guild.roles.cache.find((role) => role.name === "PLEB");
-//     // // guild.members.cache.get("220820279667064832").roles.add(role);
-
-//     // dClient.guild.members.fetch("220820279667064832").then((memberData) => {
-//     //   memberData.roles.add(getRole("PLEB", dClient));
-//     // });
-//   });
-// // });
-
-// fetch(
-//   "https://api.twitch.tv/helix/channel_points/custom_rewards?broadcaster_id=58606718",
-//   {
-//     method: "POST",
-//     headers: {
-//       "client-id": process.env.CLIENT_ID,
-//       Authorization: `Bearer ${process.env.ACCESS_TOKEN}`,
-//       "Content-Type": "application/json",
-//     },
-//     body: JSON.stringify({
-//       title: "test creation3",
-//       cost: 50000,
-//       is_user_input_required: true,
-//       prompt: "Enter in your Discord username including the id",
-//     }),
-//   }
-// );
 
 // if channel is live, send message every hour
 cron.schedule("0 * * * *", () => {
@@ -344,5 +295,26 @@ client.on("message", (channel, user, message, self) => {
       });
   });
 });
+
+// cookie storage
+app.use(
+  session({
+    secret: "secret",
+    cookie: {
+      maxAge: 60000 * 60 * 24,
+    },
+    resave: false,
+    saveUninitialized: false,
+    store: Store.create({ mongoUrl: process.env.MONGODB_URI }),
+  })
+);
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.use("/api", routes);
+
+app.listen(process.env.PORT || 3002, () =>
+  console.log(`running on port ${process.env.PORT}`)
+);
 
 dClient.login(process.env.BOT_TOKEN);

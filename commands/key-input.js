@@ -1,32 +1,18 @@
 require("dotenv").config();
-const API = require("call-of-duty-api")();
 const Discord = require("discord.js");
-const tmi = require("tmi.js");
-var fetch = require("node-fetch");
-const Key = require("../models/keys");
 
 module.exports = {
-  name: "setkeys",
-  syntax: ">setkeys",
-  description: "Set up your clientID and access key.",
+  name: "verify",
+  syntax: ">verify",
+  description: "Verifies your twitch account..",
   include: true,
   args: false,
   execute(message, args) {
-    const options = {
-      options: { debug: true },
-      connection: {
-        reconnect: true,
-      },
-      identity: {
-        username: "GregBot",
-        password: process.env.AUTH_TOKEN,
-      },
-      channels: ["kalaskyyy"],
-    };
+    const dmWarning = new Discord.MessageEmbed()
+      .setColor("#FF0000")
+      .setTitle("This command must be executed in a server.")
 
-    const client = new tmi.client(options);
-
-    client.connect();
+      .setThumbnail("https://i.imgur.com/I6hxLXI.png");
 
     if (message.channel.type === "dm") {
       message.author.send(dmWarning);
@@ -35,46 +21,22 @@ module.exports = {
 
     const initialPromptEmbed = new Discord.MessageEmbed()
       .setColor("#00C5CD")
-      .setTitle("Enter your Access Token and Client ID")
-      .setDescription(
-        "Get you Access Token and Client ID from https://twitchtokengenerator.com/\nSelect `Yes` on the following permissions: `chat_login` > `channel:read:redemptions` > `manage:redemptions`.\nClick `Gnerate Token!`. You will now see your Client ID and Access Token on the top of the web page."
-      )
+      .setTitle("Click the link below to get verified!")
+      .setDescription("http://localhost:3001/api/auth/discord/")
       .addFields(
         {
-          name: "Where and how are my Client ID and Access Token being stored?",
+          name: "Why do I need to verify my Discord account?",
           value:
-            "Your Client ID and Access Token are salted, hashed, and then stored in a database.",
+            "This confirms your Twitch username, and prevents identity fraud. Having someone use your Twitch username to steal a color isn't fun :(",
         },
-        { name: "Syntax:", value: "`clientId accessToken`" }
+        {
+          name: "Tip:",
+          value:
+            "If you successfully authorized your account, run `>color {twitch username}` in the server to get your color if you redeemed one.",
+        }
       )
-      .setThumbnail("https://i.imgur.com/tpbXWeM.png")
-      .setFooter("We do not store login credentials.");
+      .setThumbnail("https://i.imgur.com/tpbXWeM.png");
 
-    message.author.send(initialPromptEmbed).then((data) => {
-      let authorChannel = data.channel;
-      const filter = (m) => message.author.id === m.author.id;
-
-      authorChannel
-        .awaitMessages(filter, {
-          time: 120000,
-          max: 1,
-          errors: ["time"],
-        })
-        .then((messages) => {
-          let messageContent = messages.first().content;
-          let arrayIndex = messageContent.split(" ");
-          let clientID = arrayIndex[0];
-          let accessToken = arrayIndex[1];
-
-          Key.create({
-            clientID: clientID,
-            accessToken: accessToken,
-          }).catch((err) => {
-            if (err) {
-              console.log(err);
-            }
-          });
-        });
-    });
+    message.author.send(initialPromptEmbed);
   },
 };
