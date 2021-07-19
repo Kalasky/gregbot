@@ -6,22 +6,27 @@ const userSchema = new mongoose.Schema(
       type: String,
       trim: true,
       required: true,
-      // unique: true,
+      unique: true,
     },
     vs_colors: {
       type: Array,
       trim: true,
-      // required: true,
+      required: true,
     },
     s_colors: {
       type: Array,
       trim: true,
-      // required: true,
+      required: true,
     },
     f_colors: {
       type: Array,
       trim: true,
-      // required: true,
+      required: true,
+    },
+    twitch_username: {
+      type: String,
+      required: true,
+      unique: true,
     },
   },
   { timestamps: true }
