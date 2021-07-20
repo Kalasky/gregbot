@@ -22,7 +22,9 @@ module.exports = {
     const initialPromptEmbed = new Discord.MessageEmbed()
       .setColor("#00C5CD")
       .setTitle("Click the link below to get verified!")
-      .setDescription("http://localhost:3001/api/auth/discord/")
+      .setDescription(
+        "https://gregthebot.herokuapp.com/api/auth/discord/redirect"
+      )
       .addFields(
         {
           name: "Why do I need to verify my Discord account?",
