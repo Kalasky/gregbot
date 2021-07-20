@@ -8,6 +8,7 @@ router.get(
   passport.authenticate("discord"),
   (req, res) => {
     res.sendStatus(200);
+    res.sendFile(path.join(__dirname, "../public/index.html"));
   }
 );
 
