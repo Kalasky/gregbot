@@ -4,7 +4,7 @@ const Discord = require("discord.js");
 module.exports = {
   name: "verify",
   syntax: ">verify",
-  description: "Verifies your twitch account..",
+  description: "Verifies your twitch account.",
   include: true,
   args: false,
   execute(message, args) {
@@ -27,14 +27,19 @@ module.exports = {
       )
       .addFields(
         {
-          name: "Why do I need to verify my Discord account?",
+          name: "Make sure you have your Twitch linked to your Discord account!",
           value:
-            "This confirms your Twitch username, and prevents identity fraud. Having someone use your Twitch username to steal a color isn't fun :(",
+            "This confirms that it's actually yout Twitch account, and prevents identity fraud.",
         },
         {
-          name: "Tip:",
+          name: "Why do I need to verify my Discord account?",
           value:
-            "If you successfully authorized your account, run `>color {twitch username}` in the server to get your color if you redeemed one.",
+            "This confirms that it's actually yout Twitch account, and prevents identity fraud.",
+        },
+        {
+          name: "Next step:",
+          value:
+            "If you successfully authorize your account and redeemed the twitch channel reward, run `>color twitch_username` in the server to get your color!",
         }
       )
       .setThumbnail("https://i.imgur.com/tpbXWeM.png");
