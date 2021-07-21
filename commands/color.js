@@ -3,7 +3,7 @@ const API = require("call-of-duty-api")();
 const Discord = require("discord.js");
 const { prefix } = require("../config.json");
 const tmi = require("tmi.js");
-var fetch = require("node-fetch");
+const fetch = require("node-fetch");
 const User = require("../models/user");
 const vs_json = require("../vs_colors.json");
 const s_json = require("../s_colors.json");
@@ -31,6 +31,17 @@ module.exports = {
     const client = new tmi.client(options);
 
     client.connect();
+
+    const dmWarning = new Discord.MessageEmbed()
+      .setColor("#FF0000")
+      .setTitle("This command must be executed in a server.")
+
+      .setThumbnail("https://i.imgur.com/I6hxLXI.png");
+
+    if (message.channel.type === "dm") {
+      message.author.send(dmWarning);
+      return;
+    }
 
     // very slight color (vs_color) embed
     const initialPromptEmbed = new Discord.MessageEmbed()
@@ -455,8 +466,10 @@ module.exports = {
                                                               )
                                                             );
 
-                                                            // grabbing role_name values from json file and looping thrrough all of them using a for in loop
-                                                            for (var key in vs_json) {
+                                                            // grabbing role_name values from json file and looping through
+                                                            // all of them using a for in loop
+                                                            // (for the use case of removing all vs or s colors at once)
+                                                            for (const key in vs_json) {
                                                               if (
                                                                 vs_json.hasOwnProperty(
                                                                   key
@@ -684,8 +697,8 @@ module.exports = {
                                                                                         )
                                                                                       );
 
-                                                                                      // grabbing role_name values from json file and looping thrrough all of them using a for in loop
-                                                                                      for (var key in vs_json) {
+                                                                                      // grabbing role_name values from json file and looping through all of them using a for in loop
+                                                                                      for (const key in vs_json) {
                                                                                         if (
                                                                                           vs_json.hasOwnProperty(
                                                                                             key
@@ -1109,8 +1122,8 @@ module.exports = {
                                               getRole(roleName, message)
                                             );
 
-                                            // grabbing role_name values from json file and looping thrrough all of them using a for in loop
-                                            for (var key in vs_json) {
+                                            // grabbing role_name values from json file and looping through all of them using a for in loop
+                                            for (const key in vs_json) {
                                               if (vs_json.hasOwnProperty(key)) {
                                                 console.log(
                                                   key +
@@ -1263,8 +1276,8 @@ module.exports = {
                                                                   )
                                                                 );
 
-                                                                // grabbing role_name values from json file and looping thrrough all of them using a for in loop
-                                                                for (var key in vs_json) {
+                                                                // grabbing role_name values from json file and looping through all of them using a for in loop
+                                                                for (const key in vs_json) {
                                                                   if (
                                                                     vs_json.hasOwnProperty(
                                                                       key
@@ -1592,8 +1605,8 @@ module.exports = {
                                               getRole(roleName, message)
                                             );
 
-                                            // grabbing role_name values from json file and looping thrrough all of them using a for in loop
-                                            for (var key in vs_json) {
+                                            // grabbing role_name values from json file and looping through all of them using a for in loop
+                                            for (const key in vs_json) {
                                               if (vs_json.hasOwnProperty(key)) {
                                                 console.log(
                                                   key +

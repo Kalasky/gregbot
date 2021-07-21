@@ -101,7 +101,7 @@ const options = {
     username: "GregTheRobot",
     password: process.env.AUTH_TOKEN,
   },
-  channels: ["GregTheBoomer"],
+  channels: ["edgyyyegirl"],
 };
 
 const client = new tmi.client(options);
@@ -112,11 +112,11 @@ client.on("connected", (address, port) => {
   console.log("connected");
 });
 
-var fetch = require("node-fetch");
+const fetch = require("node-fetch");
 
 // if channel is live, send message every hour
 cron.schedule("0 * * * *", () => {
-  fetch("https://api.twitch.tv/helix/streams?user_login=gregtheboomer", {
+  fetch("https://api.twitch.tv/helix/streams?user_login=edgyyyegirl", {
     headers: {
       Authorization: `Bearer ${process.env.ACCESS_TOKEN}`,
       "Client-Id": process.env.CLIENT_ID,
@@ -127,7 +127,7 @@ cron.schedule("0 * * * *", () => {
       // data.data[0].type === "live"
       if (data.data.length !== 0) {
         client.say(
-          "GregTheBoomer",
+          "edgyyyegirl",
 
           "If you want to hangout with the fellow boomers or know when I go live, you can join our discord! BBoomer https://discord.gg/4rpfMyu"
         );
@@ -160,58 +160,58 @@ client.on("message", (channel, user, message, self) => {
         switch (message) {
           case ">kills":
             client.action(
-              "GregTheBoomer",
+              "edgyyyegirl",
               `Greg has ${kills} kills in Warzone`
             );
             break;
           case ">wins":
-            client.action("GregTheBoomer", `Greg has ${wins} wins in Warzone`);
+            client.action("edgyyyegirl", `Greg has ${wins} wins in Warzone`);
             break;
           case ">kd":
             client.action(
-              "GregTheBoomer",
+              "edgyyyegirl",
               `Greg has ${kills} kills in Warzone`
             );
             break;
           case ">wins":
-            client.action("GregTheBoomer", `Greg has ${wins} wins in Warzone`);
+            client.action("edgyyyegirl", `Greg has ${wins} wins in Warzone`);
             break;
           case ">kd":
             client.action(
-              "GregTheBoomer",
+              "edgyyyegirl",
 
               `Greg's kill death ratio is ${kd} in Warzone`
             );
             break;
           case ">top10":
             client.action(
-              "GregTheBoomer",
+              "edgyyyegirl",
 
               `Greg has finished top ten in ${topTen} games of Warzone`
             );
             break;
           case ">top5":
             client.action(
-              "GregTheBoomer",
+              "edgyyyegirl",
 
               `Greg has finished top five in ${topFive} games of Warzone`
             );
           case ">commands":
             client.action(
-              "GregTheBoomer",
+              "edgyyyegirl",
 
               `Here's a list of my commands: https://pastebin.com/V8Uv4AcH`
             );
             break;
           case ">help":
             client.action(
-              "GregTheBoomer",
+              "edgyyyegirl",
 
               `Here's a list of my commands: https://pastebin.com/V8Uv4AcH`
             );
             break;
           case ">rapidchess":
-            chessAPI.getPlayerStats("GregTheBoomer").then(
+            chessAPI.getPlayerStats("edgyyyegirl").then(
               function (res) {
                 let rapidWin = res.body.chess_rapid.record.win;
                 let rapidLoss = res.body.chess_rapid.record.loss;
@@ -219,7 +219,7 @@ client.on("message", (channel, user, message, self) => {
                 let rapidBestRating = res.body.chess_rapid.best.rating;
                 let rapidCurrentRating = res.body.chess_rapid.last.rating;
                 client.action(
-                  "GregTheBoomer",
+                  "edgyyyegirl",
 
                   `Greg's stats in Rapid: Wins: ${rapidWin} Losses: ${rapidLoss} Draws: ${rapidDraw} Current Elo: ${rapidCurrentRating} Best Elo: ${rapidBestRating}`
                 );
@@ -227,12 +227,12 @@ client.on("message", (channel, user, message, self) => {
               function (err) {
                 console.log(err);
 
-                client.action("GregTheBoomer", `${err}`);
+                client.action("edgyyyegirl", `${err}`);
               }
             );
             break;
           case ">blitzchess":
-            chessAPI.getPlayerStats("GregTheBoomer").then(
+            chessAPI.getPlayerStats("edgyyyegirl").then(
               function (res) {
                 let blitzWin = res.body.chess_blitz.record.win;
                 let blitzLoss = res.body.chess_blitz.record.loss;
@@ -240,7 +240,7 @@ client.on("message", (channel, user, message, self) => {
                 let blitzBestRating = res.body.chess_blitz.best.rating;
                 let blitzCurrentRating = res.body.chess_blitz.last.rating;
                 client.action(
-                  "GregTheBoomer",
+                  "edgyyyegirl",
 
                   `Greg's stats in Blitz: Wins: ${blitzWin} Losses: ${blitzLoss} Draws: ${blitzDraw} Current Elo: ${blitzCurrentRating} Best Elo: ${blitzBestRating}`
                 );
@@ -248,7 +248,7 @@ client.on("message", (channel, user, message, self) => {
               function (err) {
                 console.log(err);
 
-                client.action("GregTheBoomer", `${err}`);
+                client.action("edgyyyegirl", `${err}`);
               }
             );
             break;
@@ -268,7 +268,7 @@ client.on("message", (channel, user, message, self) => {
                 let rapidBestRating = res.body.chess_rapid.best.rating;
                 let rapidCurrentRating = res.body.chess_rapid.last.rating;
                 client.action(
-                  "GregTheBoomer",
+                  "edgyyyegirl",
 
                   `${msg[1]} Blitz stats: Wins: ${blitzWin} Losses: ${blitzLoss} Draws: ${blitzDraw} Current Elo: ${blitzCurrentRating} Best Elo: ${blitzBestRating} ---- ${msg[1]} Rapid stats: Wins: ${rapidWin} Losses: ${rapidLoss} Draws: ${rapidDraw} Current Elo: ${rapidCurrentRating} Best Elo: ${rapidBestRating}`
                 );
@@ -276,7 +276,7 @@ client.on("message", (channel, user, message, self) => {
               function (err) {
                 console.log(err);
                 client.action(
-                  "GregTheBoomer",
+                  "edgyyyegirl",
 
                   `${err} - Make sure the user exists and there is no misspelling`
                 );
@@ -291,7 +291,7 @@ client.on("message", (channel, user, message, self) => {
         }
       })
       .catch((err) => {
-        client.action("GregTheBoomer", `Error: ${err}`);
+        client.action("edgyyyegirl", `Error: ${err}`);
       });
   });
 });
