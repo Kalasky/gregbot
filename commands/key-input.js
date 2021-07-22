@@ -29,12 +29,12 @@ module.exports = {
         {
           name: "Make sure you have your Twitch linked to your Discord account!",
           value:
-            "This confirms that it's actually yout Twitch account, and prevents identity fraud.",
+            "This confirms that it's actually your Twitch account, and prevents identity fraud.",
         },
         {
           name: "Why do I need to verify my Discord account?",
           value:
-            "This confirms that it's actually yout Twitch account, and prevents identity fraud.",
+            "This confirms that it's actually your Twitch account, and prevents identity fraud.",
         },
         {
           name: "Next step:",
