@@ -38,13 +38,13 @@ passport.use(
 
       var resultObject = search("twitch", connections);
       // returning twitch username
-      console.log(resultObject.name);
+      // console.log(resultObject.name);
 
       try {
         const findUser = await User.findOneAndUpdate(
           { discordID: id },
           {
-            $set: { twitch_username: resultObject.name },
+            $set: { twitch_username: resultObject.name.toLowerCase()},
           },
           { upsert: true }
         );
@@ -59,7 +59,7 @@ passport.use(
                 vs_colors: [],
                 s_colors: [],
                 f_colors: [],
-                twitch_username: resultObject.name,
+                twitch_username: resultObject.name.toLowerCase(),
               },
             },
             { upsert: true }

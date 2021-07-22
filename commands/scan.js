@@ -23,7 +23,7 @@ module.exports = {
             async function roleScan() {
                 const value = await userData.roles.cache.find((role) => role.name === vs_json[key].role_name);
                 if (value) {
-                    console.log(userData.user.id, value.name); // logging corresponding id's & role names 
+                    // console.log(userData.user.id, value.name); // logging corresponding id's & role names 
                     try {  const userQuery = await User.updateMany({
                         _id: { $eq: user._id },},{
                         $addToSet: {
