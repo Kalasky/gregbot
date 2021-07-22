@@ -145,26 +145,6 @@ module.exports = {
       message.channel.send(nameError);
     }
 
-    async function myFetch() {
-      let response = await fetch(
-        // fetch all custom channel point rewards
-        // https://api.twitch.tv/helix/channel_points/custom_rewards?broadcaster_id=58606718&status=UNFULFILLED
-
-        // lists custom reward redemptions for a specific reward
-        // https://api.twitch.tv/helix/channel_points/custom_rewards/redemptions?broadcaster_id=58606718&reward_id=9591e009-bdc6-434d-aa05-3481b4746b46&status=UNFULFILLED
-
-        "https://api.twitch.tv/helix/channel_points/custom_rewards/redemptions?broadcaster_id=58606718&reward_id=08d5e2d9-ddd7-4082-bc78-39b06b35cd68&status=UNFULFILLED",
-        {
-          headers: {
-            "client-id": process.env.CLIENT_ID,
-            Authorization: `Bearer ${process.env.ACCESS_TOKEN}`,
-          },
-        }
-      );
-
-      console.log("fetch response", response.json());
-    }
-
     fetch(
       // fetch all custom channel point rewards
       // https://api.twitch.tv/helix/channel_points/custom_rewards?broadcaster_id=58606718&status=UNFULFILLED
@@ -215,30 +195,10 @@ module.exports = {
                 }
               );
             }
-            // grabs all server roles
-            // console.log(memberData.roles.member.guild.roles);
+
 
             // if agrs[1] (twitchName) matches up with one of the unfulfilled reward user_names --> apply role
-            if (reward[i].user_name === twitchName) {
-              // initialize user doc in db
-              // User.create(
-              //   { discordID: message.author.id },
-              //   {
-              //     $set: {
-              //       vs_colors: [],
-              //       s_colors: [],
-              //       f_colors: [],
-              //       twitch_username: "",
-              //     },
-              //   },
-              //   { upsert: true },
-              //   function callback(err) {
-              //     if (err) {
-              //       console.log(err);
-              //     }
-              //   }
-              // );
-
+            if (reward[i].user_name.toLowerCase() === twitchName.toLowerCase()) {
               User.countDocuments(
                 { discordID: message.author.id },
                 function (err, count) {
@@ -272,6 +232,7 @@ module.exports = {
                           // the user needs to be prompted with the full color embed instead
                           // if f_colors were to be > 10 the user has completed the color journey and should no longer be prompted
                           if (
+                            twitchName.toLowerCase() === res.twitch_username.toLowerCase() &&
                             res.vs_colors.length < 11 &&
                             res.s_colors.length < 11 &&
                             res.f_colors.length < 11
@@ -1043,6 +1004,8 @@ module.exports = {
                                     );
                                   });
                               });
+                          } else if (twitchName.toLowerCase() !== res.twitch_username.toLowerCase()) {
+                            message.channel.send('This twitch username is not authorized under your account.')
                           }
 
                           // if very slight color length is > 10
@@ -1054,7 +1017,7 @@ module.exports = {
                                 res.vs_colors.length
                               );
 
-                              if (res.vs_colors.length > 10) {
+                              if (twitchName.toLowerCase() === res.twitch_username.toLowerCase() && res.vs_colors.length > 10) {
                                 message.channel
                                   .send(slightColorEmbed)
                                   .then((s_embed) => {
@@ -1520,6 +1483,8 @@ module.exports = {
                                         );
                                       });
                                   });
+                              } else if (twitchName.toLowerCase() !== res.twitch_username.toLowerCase()) {
+                                message.channel.send('This twitch username is not authorized under your account.')
                               }
                             }
                           );
@@ -1535,7 +1500,7 @@ module.exports = {
                                 res.s_colors.length
                               );
 
-                              if (res.s_colors.length > 10) {
+                              if (twitchName.toLowerCase() === res.twitch_username.toLowerCase() && res.s_colors.length > 10) {
                                 message.channel
                                   .send(fullColorEmbed)
                                   .then((f_embed) => {
@@ -1722,6 +1687,8 @@ module.exports = {
                                         );
                                       });
                                   });
+                              } else if (twitchName.toLowerCase() !== res.twitch_username.toLowerCase()) {
+                                message.channel.send('This twitch username is not authorized under your account.')
                               }
 
                               if (err) {
