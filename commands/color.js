@@ -14,7 +14,7 @@ module.exports = {
   description: "Pick a color!",
   include: true,
   args: true,
-  cooldown: 0,
+  cooldown: 10,
   execute(message, args) {
     const options = {
       options: { debug: true },
