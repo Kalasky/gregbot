@@ -66,7 +66,6 @@ module.exports = {
              }
              sRoleScan();
           }
-
           // full colors
           for (const key in f_colors) {
             async function fRoleScan() {
