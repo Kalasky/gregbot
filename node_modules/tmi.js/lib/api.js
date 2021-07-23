@@ -1,24 +1,23 @@
-var fetch = require("node-fetch");
-var _ = require("./utils");
+const fetch = require('node-fetch');
+const _ = require('./utils');
 
-var api = function api(options, callback) {
+module.exports = function api(options, callback) {
 	// Set the url to options.uri or options.url..
-	var url = options.url !== undefined ? options.url : options.uri;
+	let url = options.url !== undefined ? options.url : options.uri;
 
 	// Make sure it is a valid url..
 	if(!_.isURL(url)) {
-		url = `https://api.twitch.tv/kraken${url[0] === "/" ? url : `/${url}`}`;
+		url = `https://api.twitch.tv/kraken${url[0] === '/' ? url : `/${url}`}`;
 	}
 
 	// We are inside a Node application, so we can use the node-fetch module..
 	if(_.isNode()) {
-		var opts = _.merge({ method: "GET", json: true }, options, { url });
-		var url = opts.url;
+		const opts = Object.assign({ method: 'GET', json: true }, options);
 		if(opts.qs) {
-			var qs = new URLSearchParams(opts.qs);
+			const qs = new URLSearchParams(opts.qs);
 			url += `?${qs}`;
 		}
-		var response = {};
+		let response = {};
 		/** @type {ReturnType<import('node-fetch')['default']>} */
 		const fetchPromise = fetch(url, {
 			method: opts.method,
@@ -36,18 +35,18 @@ var api = function api(options, callback) {
 	}
 	// Web application, extension, React Native etc.
 	else {
-		var opts = _.merge({ method: "GET", headers: {} }, options, { url });
+		const opts = Object.assign({ method: 'GET', headers: {} }, options, { url });
 		// prepare request
-		var xhr = new XMLHttpRequest();
+		const xhr = new XMLHttpRequest();
 		xhr.open(opts.method, opts.url, true);
-		for(var name in opts.headers) {
+		for(const name in opts.headers) {
 			xhr.setRequestHeader(name, opts.headers[name]);
 		}
-		xhr.responseType = "json";
+		xhr.responseType = 'json';
 		// set request handler
-		xhr.addEventListener("load", ev => {
-			if(xhr.readyState == 4) {
-				if(xhr.status != 200) {
+		xhr.addEventListener('load', _ev => {
+			if(xhr.readyState === 4) {
+				if(xhr.status !== 200) {
 					callback(xhr.status, null, null);
 				}
 				else {
@@ -58,6 +57,4 @@ var api = function api(options, callback) {
 		// submit
 		xhr.send();
 	}
-}
-
-module.exports = api;
+};

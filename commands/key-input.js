@@ -39,7 +39,7 @@ module.exports = {
         {
           name: "Next step:",
           value:
-            "If you successfully authorize your account and redeemed the twitch channel reward, run `>color twitch_username` in the server to get your color!",
+            "If you successfully authorise your account and redeemed the twitch channel reward, run `>color twitch_username` in the server to get your color!",
         }
       )
       .setThumbnail("https://i.imgur.com/tpbXWeM.png");
