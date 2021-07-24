@@ -25,7 +25,7 @@ module.exports = {
         username: "GregBot",
         password: process.env.AUTH_TOKEN,
       },
-      channels: ["edgyyyegirl"],
+      channels: ["gregtheboomer"],
     };
 
     const client = new tmi.client(options);

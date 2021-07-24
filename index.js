@@ -41,7 +41,86 @@ mongoose
 
   dClient.on("ready", () => {
     dClient.user.setActivity('>help', { type: 'WATCHING' });
-  })
+    
+  // try same thing but with reward as a var not let
+  cron.schedule("*/10 * * * *", () => {
+  fetch(
+  'https://api.twitch.tv/helix/channel_points/custom_rewards/redemptions?first=50&broadcaster_id=58606718&reward_id=08d5e2d9-ddd7-4082-bc78-39b06b35cd68&status=UNFULFILLED',
+  {
+    headers: {
+      "client-id": process.env.CLIENT_ID,
+      Authorization: `Bearer ${process.env.ACCESS_TOKEN}`,
+    },
+  }
+)
+.then((res) => res.json())
+.then((data) => {
+  let reward = data.data;
+
+  // successfully returns the only object that meets the requirement
+  const mapReward = reward.map(yo => {
+    const rewardDate = Date.parse(yo.redeemed_at);
+    let hours = Math.abs(Date.now() - rewardDate) / 36e5;
+
+    function round(value, precision) {
+      var multiplier = Math.pow(10, precision || 0);
+      return Math.round(value * multiplier) / multiplier;
+  }
+
+    yo.redeemed_at = round(hours, 1);
+    return yo;
+  });
+
+  const result = mapReward.filter(x => x.redeemed_at >= 1.0);
+
+  for (let i = 0; i < result.length; i++) {
+    // console.log(result[i].id)
+   async function fulfillReward() {
+    await fetch(
+      `https://api.twitch.tv/helix/channel_points/custom_rewards/redemptions?broadcaster_id=58606718&reward_id=08d5e2d9-ddd7-4082-bc78-39b06b35cd68&id=${result[i].id}`,
+      {
+        method: "PATCH",
+        headers: {
+          "client-id": process.env.CLIENT_ID,
+          Authorization: `Bearer ${process.env.ACCESS_TOKEN}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          status: "CANCELED",
+        }),
+      }
+    );
+  }
+  fulfillReward();
+  }
+ })
+})
+
+  // fetch custom rewards from specified channel
+  // fetch("https://api.twitch.tv/helix/channel_points/custom_rewards?broadcaster_id=107554430&status=UNFULFILLED", {
+  //     headers: {
+  //       Authorization: `Bearer ${process.env.ACCESS_TOKEN}`,
+  //       "client-Id": process.env.CLIENT_ID,
+  //     },
+  //   })
+  // .then((res) => res.json())
+  //     .then((data) => {
+  //       console.log(data)
+  //     })
+
+
+  // get specified user:
+  // fetch('https://api.twitch.tv/helix/search/channels?query=gregtheboomer', {
+  //     headers: {
+  //       Authorization: `Bearer ${process.env.ACCESS_TOKEN}`,
+  //       "client-Id": process.env.CLIENT_ID,
+  //     },
+  //   })
+  // .then((res) => res.json())
+  //     .then((data) => {
+  //       console.log(data)
+  //     })
+})
 
 dClient.on("message", (message) => {  // If the message either doesn't start with the prefix or was sent by a bot, exit early.
   if (!message.content.startsWith(prefix) || message.author.bot) return;
@@ -104,7 +183,7 @@ const options = {
     username: "GregTheRobot",
     password: process.env.AUTH_TOKEN,
   },
-  channels: ["edgyyyegirl"],
+  channels: ["GregTheBoomer"],
 };
 
 const client = new tmi.client(options);
@@ -117,78 +196,7 @@ client.on("connected", (address, port) => {
 
 const fetch = require("node-fetch");
 
-// try same thing but with reward as a var not let
-cron.schedule("0 * * * *", () => {
-fetch(
-'https://api.twitch.tv/helix/channel_points/custom_rewards/redemptions?first=50&broadcaster_id=58606718&reward_id=08d5e2d9-ddd7-4082-bc78-39b06b35cd68&status=UNFULFILLED',
-  {
-    headers: {
-      "client-id": process.env.CLIENT_ID,
-      Authorization: `Bearer ${process.env.ACCESS_TOKEN}`,
-    },
-  }
-)
-.then((res) => res.json())
-.then((data) => {
-  let reward = data.data;
 
-  // successfully returns the only object that meets the requirement
-  const mapReward = reward.map(yo => {
-    const rewardDate = Date.parse(yo.redeemed_at);
-    let hours = Math.abs(Date.now() - rewardDate) / 36e5;
-    yo.redeemed_at = hours
-    return yo;
-  });
-  
-  const result = mapReward.filter(x => x.redeemed_at > 1.000 );
-
-  for (let i = 0; i < result.length; i++) {
-    console.log(result[i].id)
-   async function fulfillReward() {
-    await fetch(
-      `https://api.twitch.tv/helix/channel_points/custom_rewards/redemptions?broadcaster_id=58606718&reward_id=08d5e2d9-ddd7-4082-bc78-39b06b35cd68&id=${result[i].id}`,
-      {
-        method: "PATCH",
-        headers: {
-          "client-id": process.env.CLIENT_ID,
-          Authorization: `Bearer ${process.env.ACCESS_TOKEN}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          status: "CANCELED",
-        }),
-      }
-    );
-  }
-  fulfillReward();
-  }
- })
-})
-
-// fetch custom rewards from specified channel
-// fetch("https://api.twitch.tv/helix/channel_points/custom_rewards?broadcaster_id=107554430&status=UNFULFILLED", {
-//     headers: {
-//       Authorization: `Bearer ${process.env.ACCESS_TOKEN}`,
-//       "client-Id": process.env.CLIENT_ID,
-//     },
-//   })
-// .then((res) => res.json())
-//     .then((data) => {
-//       console.log(data)
-//     })
-
-
-// get specified user:
-// fetch('https://api.twitch.tv/helix/search/channels?query=gregtheboomer', {
-//     headers: {
-//       Authorization: `Bearer ${process.env.ACCESS_TOKEN}`,
-//       "client-Id": process.env.CLIENT_ID,
-//     },
-//   })
-// .then((res) => res.json())
-//     .then((data) => {
-//       console.log(data)
-//     })
 
 // channel: String - Channel name
 // userstate: Object - Userstate object
@@ -213,58 +221,58 @@ client.on("message", (channel, user, message, self) => {
         switch (message) {
           case ">kills":
             client.action(
-              "edgyyyegirl",
+              "GregTheBoomer",
               `Greg has ${kills} kills in Warzone`
             );
             break;
           case ">wins":
-            client.action("edgyyyegirl", `Greg has ${wins} wins in Warzone`);
+            client.action("GregTheBoomer", `Greg has ${wins} wins in Warzone`);
             break;
           case ">kd":
             client.action(
-              "edgyyyegirl",
+              "GregTheBoomer",
               `Greg has ${kills} kills in Warzone`
             );
             break;
           case ">wins":
-            client.action("edgyyyegirl", `Greg has ${wins} wins in Warzone`);
+            client.action("GregTheBoomer", `Greg has ${wins} wins in Warzone`);
             break;
           case ">kd":
             client.action(
-              "edgyyyegirl",
+              "GregTheBoomer",
 
               `Greg's kill death ratio is ${kd} in Warzone`
             );
             break;
           case ">top10":
             client.action(
-              "edgyyyegirl",
+              "GregTheBoomer",
 
               `Greg has finished top ten in ${topTen} games of Warzone`
             );
             break;
           case ">top5":
             client.action(
-              "edgyyyegirl",
+              "GregTheBoomer",
 
               `Greg has finished top five in ${topFive} games of Warzone`
             );
           case ">commands":
             client.action(
-              "edgyyyegirl",
+              "GregTheBoomer",
 
               `Here's a list of my commands: https://pastebin.com/V8Uv4AcH`
             );
             break;
           case ">help":
             client.action(
-              "edgyyyegirl",
+              "GregTheBoomer",
 
               `Here's a list of my commands: https://pastebin.com/V8Uv4AcH`
             );
             break;
           case ">rapidchess":
-            chessAPI.getPlayerStats("edgyyyegirl").then(
+            chessAPI.getPlayerStats("GregTheBoomer").then(
               function (res) {
                 let rapidWin = res.body.chess_rapid.record.win;
                 let rapidLoss = res.body.chess_rapid.record.loss;
@@ -272,7 +280,7 @@ client.on("message", (channel, user, message, self) => {
                 let rapidBestRating = res.body.chess_rapid.best.rating;
                 let rapidCurrentRating = res.body.chess_rapid.last.rating;
                 client.action(
-                  "edgyyyegirl",
+                  "GregTheBoomer",
 
                   `Greg's stats in Rapid: Wins: ${rapidWin} Losses: ${rapidLoss} Draws: ${rapidDraw} Current Elo: ${rapidCurrentRating} Best Elo: ${rapidBestRating}`
                 );
@@ -280,12 +288,12 @@ client.on("message", (channel, user, message, self) => {
               function (err) {
                 console.log(err);
 
-                client.action("edgyyyegirl", `${err}`);
+                client.action("GregTheBoomer", `${err}`);
               }
             );
             break;
           case ">blitzchess":
-            chessAPI.getPlayerStats("edgyyyegirl").then(
+            chessAPI.getPlayerStats("GregTheBoomer").then(
               function (res) {
                 let blitzWin = res.body.chess_blitz.record.win;
                 let blitzLoss = res.body.chess_blitz.record.loss;
@@ -293,7 +301,7 @@ client.on("message", (channel, user, message, self) => {
                 let blitzBestRating = res.body.chess_blitz.best.rating;
                 let blitzCurrentRating = res.body.chess_blitz.last.rating;
                 client.action(
-                  "edgyyyegirl",
+                  "GregTheBoomer",
 
                   `Greg's stats in Blitz: Wins: ${blitzWin} Losses: ${blitzLoss} Draws: ${blitzDraw} Current Elo: ${blitzCurrentRating} Best Elo: ${blitzBestRating}`
                 );
@@ -301,7 +309,7 @@ client.on("message", (channel, user, message, self) => {
               function (err) {
                 console.log(err);
 
-                client.action("edgyyyegirl", `${err}`);
+                client.action("GregTheBoomer", `${err}`);
               }
             );
             break;
@@ -321,7 +329,7 @@ client.on("message", (channel, user, message, self) => {
                 let rapidBestRating = res.body.chess_rapid.best.rating;
                 let rapidCurrentRating = res.body.chess_rapid.last.rating;
                 client.action(
-                  "edgyyyegirl",
+                  "GregTheBoomer",
 
                   `${msg[1]} Blitz stats: Wins: ${blitzWin} Losses: ${blitzLoss} Draws: ${blitzDraw} Current Elo: ${blitzCurrentRating} Best Elo: ${blitzBestRating} ---- ${msg[1]} Rapid stats: Wins: ${rapidWin} Losses: ${rapidLoss} Draws: ${rapidDraw} Current Elo: ${rapidCurrentRating} Best Elo: ${rapidBestRating}`
                 );
@@ -329,7 +337,7 @@ client.on("message", (channel, user, message, self) => {
               function (err) {
                 console.log(err);
                 client.action(
-                  "edgyyyegirl",
+                  "GregTheBoomer",
 
                   `${err} - Make sure the user exists and there is no misspelling`
                 );
@@ -344,7 +352,7 @@ client.on("message", (channel, user, message, self) => {
         }
       })
       .catch((err) => {
-        client.action("edgyyyegirl", `Error: ${err}`);
+        client.action("GregTheBoomer", `Error: ${err}`);
       });
   });
 });
