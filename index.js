@@ -114,29 +114,6 @@ client.on("connected", (address, port) => {
 
 const fetch = require("node-fetch");
 
-// if channel is live, send message every hour
-cron.schedule("0 * * * *", () => {
-  fetch("https://api.twitch.tv/helix/streams?user_login=edgyyyegirl", {
-    headers: {
-      Authorization: `Bearer ${process.env.ACCESS_TOKEN}`,
-      "Client-Id": process.env.CLIENT_ID,
-    },
-  })
-    .then((res) => res.json())
-    .then((data) => {
-      // data.data[0].type === "live"
-      if (data.data.length !== 0) {
-        client.say(
-          "edgyyyegirl",
-
-          "If you want to hangout with the fellow boomers or know when I go live, you can join our discord! BBoomer https://discord.gg/4rpfMyu"
-        );
-      } else if (data.data.length === 0) {
-        return;
-      }
-    });
-});
-
 // try same thing but with reward as a var not let
 cron.schedule("0 * * * *", () => {
 fetch(
@@ -160,7 +137,7 @@ fetch(
     return yo;
   });
   
-  const result = mapReward.filter(x => x.redeemed_at > 1.0 );
+  const result = mapReward.filter(x => x.redeemed_at > 1.000 );
 
   for (let i = 0; i < result.length; i++) {
     console.log(result[i].id)
@@ -184,6 +161,31 @@ fetch(
   }
  })
 })
+
+// fetch custom rewards from specified channel
+// fetch("https://api.twitch.tv/helix/channel_points/custom_rewards?broadcaster_id=107554430&status=UNFULFILLED", {
+//     headers: {
+//       Authorization: `Bearer ${process.env.ACCESS_TOKEN}`,
+//       "client-Id": process.env.CLIENT_ID,
+//     },
+//   })
+// .then((res) => res.json())
+//     .then((data) => {
+//       console.log(data)
+//     })
+
+
+// get specified user:
+// fetch('https://api.twitch.tv/helix/search/channels?query=gregtheboomer', {
+//     headers: {
+//       Authorization: `Bearer ${process.env.ACCESS_TOKEN}`,
+//       "client-Id": process.env.CLIENT_ID,
+//     },
+//   })
+// .then((res) => res.json())
+//     .then((data) => {
+//       console.log(data)
+//     })
 
 // channel: String - Channel name
 // userstate: Object - Userstate object
