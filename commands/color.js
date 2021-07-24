@@ -137,7 +137,7 @@ module.exports = {
       .setColor("#FF0000")
       .setTitle(`Uh oh, ${message.author.username}!`)
       .setDescription(
-        "First make sure your capitilization and spelling is correct.\n\nIf your name is spelled correctly you have not redeemed 'a very slightly colored discored role' channel reward.\n\nYou must first redeem the reward to execute this command!"
+        "If your name is spelled correctly you have not redeemed the 'Discord Color Role' channel reward.\n\nMake sure you are verified! Run the command `>verify` to get started.\n\nIf you can't get verified, make sure your Twitch account is connected to your Discord account."
       )
       .setThumbnail("https://i.imgur.com/I6hxLXI.png");
 
