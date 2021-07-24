@@ -64,7 +64,7 @@ mongoose
   // try same thing but with reward as a var not let
   cron.schedule("*/10 * * * *", () => {
   fetch(
-  'https://api.twitch.tv/helix/channel_points/custom_rewards/redemptions?first=50&broadcaster_id=58606718&reward_id=ac1c12ba-51da-4672-ba87-5dca61f2737e&status=UNFULFILLED',
+  'https://api.twitch.tv/helix/channel_points/custom_rewards/redemptions?first=50&broadcaster_id=107554430&reward_id=ac1c12ba-51da-4672-ba87-5dca61f2737e&status=UNFULFILLED',
   {
     headers: {
       "client-id": process.env.CLIENT_ID,
@@ -96,7 +96,7 @@ mongoose
     // console.log(result[i].id)
    async function fulfillReward() {
     await fetch(
-      `https://api.twitch.tv/helix/channel_points/custom_rewards/redemptions?broadcaster_id=58606718&reward_id=ac1c12ba-51da-4672-ba87-5dca61f2737e&id=${result[i].id}`,
+      `https://api.twitch.tv/helix/channel_points/custom_rewards/redemptions?broadcaster_id=107554430&reward_id=ac1c12ba-51da-4672-ba87-5dca61f2737e&id=${result[i].id}`,
       {
         method: "PATCH",
         headers: {
