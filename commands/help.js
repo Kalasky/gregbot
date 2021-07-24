@@ -15,7 +15,7 @@ module.exports = {
         {
           name: ">verify",
           value:
-            "- This confirms that it's actually your Twitch account, and prevents identity fraud.\n- `Make sure you have your Twitch connected to your discord account!`\n- `You do not need to display the connection on your profile.`",
+            "- This confirms that it's actually your Twitch account, and prevents identity fraud.\n- `Make sure you have your Twitch connected to your discord account!`\n- `You do not need to display the connection on your profile.`\nIf you changed your name or want to use a different account, reconnect the new Twitch account to your Discord account and re-verify yourself.",
         },
         {
           name: ">color twitch_username",

@@ -141,6 +141,14 @@ module.exports = {
       )
       .setThumbnail("https://i.imgur.com/I6hxLXI.png");
 
+    const noAuthErr = new Discord.MessageEmbed()
+      .setColor("#FF0000")
+      .setTitle(`Uh oh, ${message.author.username}!`)
+      .setDescription(
+        "This twitch username is not authorized under your account.\n\nMake sure the username you are submitting matches up with the Twitch account name linked to your Discord account.\n\nIf you changed your name or want to use a different account, reconnect the new Twitch account to your Discord account and re-verify yourself with `>verify`."
+      )
+      .setThumbnail("https://i.imgur.com/I6hxLXI.png");
+
     function inValid() {
       message.channel.send(nameError);
     }
@@ -1002,9 +1010,7 @@ module.exports = {
                                     );
                                   });
                               });
-                          } else if (twitchName.toLowerCase() !== res.twitch_username.toLowerCase()) {
-                            message.channel.send('This twitch username is not authorized under your account.\n(Yes I know this error message sent three times, I will fix it soon... maybe.')
-                          }
+                          } 
 
                           // if very slight color length is > 10
                           User.findOne(
@@ -1482,7 +1488,7 @@ module.exports = {
                                       });
                                   });
                               } else if (twitchName.toLowerCase() !== res.twitch_username.toLowerCase()) {
-                                message.channel.send('This twitch username is not authorized under your account.\n(Yes I know this error message sent three times, I will fix it soon... maybe.')
+                                message.channel.send(noAuthErr);
                               }
                             }
                           );
@@ -1685,8 +1691,6 @@ module.exports = {
                                         );
                                       });
                                   });
-                              } else if (twitchName.toLowerCase() !== res.twitch_username.toLowerCase()) {
-                                message.channel.send('This twitch username is not authorized under your account.\n(Yes I know this error message sent three times, I will fix it soon... maybe.')
                               }
 
                               if (err) {
