@@ -137,6 +137,54 @@ cron.schedule("0 * * * *", () => {
     });
 });
 
+// try same thing but with reward as a var not let
+cron.schedule("0 * * * *", () => {
+fetch(
+'https://api.twitch.tv/helix/channel_points/custom_rewards/redemptions?first=50&broadcaster_id=58606718&reward_id=08d5e2d9-ddd7-4082-bc78-39b06b35cd68&status=UNFULFILLED',
+  {
+    headers: {
+      "client-id": process.env.CLIENT_ID,
+      Authorization: `Bearer ${process.env.ACCESS_TOKEN}`,
+    },
+  }
+)
+.then((res) => res.json())
+.then((data) => {
+  let reward = data.data;
+
+  // successfully returns the only object that meets the requirement
+  const mapReward = reward.map(yo => {
+    const rewardDate = Date.parse(yo.redeemed_at);
+    let hours = Math.abs(Date.now() - rewardDate) / 36e5;
+    yo.redeemed_at = hours
+    return yo;
+  });
+  
+  const result = mapReward.filter(x => x.redeemed_at > 1.0 );
+
+  for (let i = 0; i < result.length; i++) {
+    console.log(result[i].id)
+   async function fulfillReward() {
+    await fetch(
+      `https://api.twitch.tv/helix/channel_points/custom_rewards/redemptions?broadcaster_id=58606718&reward_id=08d5e2d9-ddd7-4082-bc78-39b06b35cd68&id=${result[i].id}`,
+      {
+        method: "PATCH",
+        headers: {
+          "client-id": process.env.CLIENT_ID,
+          Authorization: `Bearer ${process.env.ACCESS_TOKEN}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          status: "CANCELED",
+        }),
+      }
+    );
+  }
+  fulfillReward();
+  }
+ })
+})
+
 // channel: String - Channel name
 // userstate: Object - Userstate object
 // message: String - Message received
