@@ -293,7 +293,7 @@ module.exports = {
                                         )
                                       ) {
                                         embed.reply(
-                                          "You already have that role!"
+                                          "You already have that role! Run the command again :)"
                                         );
                                         return false;
                                       } else {
@@ -413,7 +413,7 @@ module.exports = {
                                                             )
                                                           ) {
                                                             s_embed.reply(
-                                                              "You already have that role!"
+                                                              "You already have that role! Run the command again :)"
                                                             );
 
                                                             return false;
@@ -644,7 +644,7 @@ module.exports = {
                                                                                       )
                                                                                     ) {
                                                                                       f_embed.reply(
-                                                                                        "You already have that role!"
+                                                                                        "You already have that role! Run the command again :)"
                                                                                       );
 
                                                                                       return false;
@@ -1074,7 +1074,7 @@ module.exports = {
                                             )
                                           ) {
                                             s_embed.reply(
-                                              "You already have that role!"
+                                              "You already have that role! Run the command again :)"
                                             );
 
                                             return false;
@@ -1225,7 +1225,7 @@ module.exports = {
                                                                 )
                                                               ) {
                                                                 f_embed.reply(
-                                                                  "You already have that role!"
+                                                                  "You already have that role! Run the command again :)"
                                                                 );
 
                                                                 return false;
@@ -1559,7 +1559,7 @@ module.exports = {
                                             )
                                           ) {
                                             f_embed.reply(
-                                              "You already have that role!"
+                                              "You already have that role! Run the command again :)"
                                             );
 
                                             return false;
