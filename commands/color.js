@@ -146,13 +146,7 @@ module.exports = {
     }
 
     fetch(
-      // fetch all custom channel point rewards
-      // https://api.twitch.tv/helix/channel_points/custom_rewards?broadcaster_id=58606718&status=UNFULFILLED
-
-      // lists custom reward redemptions for a specific reward
-      // https://api.twitch.tv/helix/channel_points/custom_rewards/redemptions?broadcaster_id=58606718&reward_id=9591e009-bdc6-434d-aa05-3481b4746b46&status=UNFULFILLED
-
-      "https://api.twitch.tv/helix/channel_points/custom_rewards/redemptions?first=50&broadcaster_id=58606718&reward_id=08d5e2d9-ddd7-4082-bc78-39b06b35cd68&status=UNFULFILLED",
+      `https://api.twitch.tv/helix/channel_points/custom_rewards/redemptions?first=50&broadcaster_id=58606718&reward_id=08d5e2d9-ddd7-4082-bc78-39b06b35cd68&status=UNFULFILLED`,
       {
         headers: {
           "client-id": process.env.CLIENT_ID,
@@ -162,15 +156,19 @@ module.exports = {
     )
       .then((res) => res.json())
       .then((data) => {
-        let reward = data.data;
-        // console.log("reward:", reward);
+
+    async function afterValue() {
+      let dataReturn = await data.pagination.cursor;
+      console.log(dataReturn) 
+
+    }
 
         /*
         - running through all created UNFULFILLED channel reward redemption and grabbing every user_input field
-        - once logic runs through UNFULFILLED rewards, mark rewards as FULFILLED 
-        
+        - once logic runs through UNFULFILLED rewards, mark rewards as FULFILLED   
         */
 
+        let reward = data.data;
         let vsEmbed = async () => {
           // looping through all of the channel reward's UNFULFILLED redemptions
           for (let i = 0; i < reward.length; i++) {
