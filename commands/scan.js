@@ -13,7 +13,7 @@ module.exports = {
     "Scans through every verified user in the discord server, and updates their current roles in the database.",
   include: true,
   args: false,
-  cooldown: 10,
+  cooldown: 30,
   execute(message, args) {
     if (!message.member.hasPermission("ADMINISTRATOR")) {
       message.channel.send("You must be an admin to execute this command.");
