@@ -39,8 +39,11 @@ mongoose
   .then(() => console.log("DB connected"))
   .catch((err) => console.log("DB CONNECTION ERROR: ", err));
 
-dClient.on("message", (message) => {
-  // If the message either doesn't start with the prefix or was sent by a bot, exit early.
+  dClient.on("ready", () => {
+    dClient.user.setActivity('>help', { type: 'WATCHING' });
+  })
+
+dClient.on("message", (message) => {  // If the message either doesn't start with the prefix or was sent by a bot, exit early.
   if (!message.content.startsWith(prefix) || message.author.bot) return;
   // Create an args variable that slices off the prefix entirely and then splits it into an array by spaces.
   const args = message.content.slice(prefix.length).split(/ +/);
