@@ -1003,7 +1003,7 @@ module.exports = {
                                   });
                               });
                           } else if (twitchName.toLowerCase() !== res.twitch_username.toLowerCase()) {
-                            message.channel.send('This twitch username is not authorized under your account.')
+                            message.channel.send('This twitch username is not authorized under your account.\n(Yes I know this error message sent three times, I will fix it soon... maybe.')
                           }
 
                           // if very slight color length is > 10
@@ -1482,7 +1482,7 @@ module.exports = {
                                       });
                                   });
                               } else if (twitchName.toLowerCase() !== res.twitch_username.toLowerCase()) {
-                                message.channel.send('This twitch username is not authorized under your account.')
+                                message.channel.send('This twitch username is not authorized under your account.\n(Yes I know this error message sent three times, I will fix it soon... maybe.')
                               }
                             }
                           );
@@ -1686,7 +1686,7 @@ module.exports = {
                                       });
                                   });
                               } else if (twitchName.toLowerCase() !== res.twitch_username.toLowerCase()) {
-                                message.channel.send('This twitch username is not authorized under your account.')
+                                message.channel.send('This twitch username is not authorized under your account.\n(Yes I know this error message sent three times, I will fix it soon... maybe.')
                               }
 
                               if (err) {
