@@ -39,30 +39,7 @@ mongoose
   .then(() => console.log("DB connected"))
   .catch((err) => console.log("DB CONNECTION ERROR: ", err));
 
-  dClient.on("ready", () => {
-    dClient.user.setActivity('>help', { type: 'WATCHING' });
-
-  // create custom reward
-  // fetch("https://api.twitch.tv/helix/channel_points/custom_rewards?broadcaster_id=107554430", {
-  //     method: "POST",
-  //     headers: {
-  //       Authorization: `Bearer ${process.env.ACCESS_TOKEN}`,
-  //       "client-Id": process.env.CLIENT_ID,
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify({
-  //       title: "Discord Color Role",
-  //       cost: "2000",
-  //       prompt: "You must redeem this reward in Greg's discord server within an hour or your channel reward will automatically be cancelled and refunded. Run the command >help in Greg's discord server for more info!"
-  //     }),
-  //   })
-  //     .then((res) => res.json())
-  //     .then((data) => {
-  //       console.log(data)
-  //   })
-
-  // try same thing but with reward as a var not let
-  cron.schedule("*/10 * * * *", () => {
+cron.schedule("*/10 * * * *", () => {
   fetch(
   'https://api.twitch.tv/helix/channel_points/custom_rewards/redemptions?first=50&broadcaster_id=107554430&reward_id=ac1c12ba-51da-4672-ba87-5dca61f2737e&status=UNFULFILLED',
   {
@@ -115,6 +92,28 @@ mongoose
  })
 })
 
+  dClient.on("ready", () => {
+    dClient.user.setActivity('>help', { type: 'WATCHING' });
+
+  // create custom reward
+  // fetch("https://api.twitch.tv/helix/channel_points/custom_rewards?broadcaster_id=107554430", {
+  //     method: "POST",
+  //     headers: {
+  //       Authorization: `Bearer ${process.env.ACCESS_TOKEN}`,
+  //       "client-Id": process.env.CLIENT_ID,
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify({
+  //       title: "Discord Color Role",
+  //       cost: "2000",
+  //       prompt: "You must redeem this reward in Greg's discord server within an hour or your channel reward will automatically be cancelled and refunded. Run the command >help in Greg's discord server for more info!"
+  //     }),
+  //   })
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       console.log(data)
+  //   })
+  
   // fetch custom rewards from specified channel
   // fetch("https://api.twitch.tv/helix/channel_points/custom_rewards?broadcaster_id=107554430&status=UNFULFILLED", {
   //     headers: {
