@@ -13,7 +13,7 @@ const mongoose = require("mongoose");
 const session = require("express-session");
 const Store = require("connect-mongo");
 const cron = require("node-cron");
-
+const fetch = require("node-fetch");
 // let color = require("./commands/color");  -- color.execute(message);
 const fs = require("fs");
 const Discord = require("discord.js");
@@ -210,10 +210,6 @@ client.connect();
 client.on("connected", (address, port) => {
   console.log("connected");
 });
-
-const fetch = require("node-fetch");
-
-
 
 // channel: String - Channel name
 // userstate: Object - Userstate object
