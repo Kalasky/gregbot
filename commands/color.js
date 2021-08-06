@@ -179,7 +179,7 @@ module.exports = {
 
           async function fulfillReward() {
             await fetch(
-                `https://api.twitch.tv/helix/channel_points/custom_rewards/redemptions?broadcaster_id=58606718&reward_id=08d5e2d9-ddd7-4082-bc78-39b06b35cd68&id=${reward[i].id}`,
+                `https://api.twitch.tv/helix/channel_points/custom_rewards/redemptions?broadcaster_id=107554430&reward_id=ac1c12ba-51da-4672-ba87-5dca61f2737e&id=${reward[i].id}`,
               {
                 method: "PATCH",
                 headers: {
