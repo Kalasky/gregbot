@@ -179,12 +179,12 @@ module.exports = {
 
           async function fulfillReward() {
             await fetch(
-              `https://api.twitch.tv/helix/channel_points/custom_rewards/redemptions?${process.env.LOCAL_REWARD}&id=${reward[i].id}`,
+                `https://api.twitch.tv/helix/channel_points/custom_rewards/redemptions?broadcaster_id=58606718&reward_id=08d5e2d9-ddd7-4082-bc78-39b06b35cd68&id=${reward[i].id}`,
               {
                 method: "PATCH",
                 headers: {
                   "client-id": process.env.CLIENT_ID,
-                  Authorization: `Bearer ${process.env.LOCAL_ACCESS_TOKEN}`,
+                  Authorization: `Bearer ${process.env.ACCESS_TOKEN}`,
                   "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
