@@ -5,7 +5,6 @@ const passport = require("passport");
 const app = express();
 const routes = require("./routes");
 const tmi = require("tmi.js");
-const API = require("call-of-duty-api")();
 const { prefix } = require("./config.json");
 const ChessWebAPI = require("chess-web-api");
 const chessAPI = new ChessWebAPI();
