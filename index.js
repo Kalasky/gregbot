@@ -120,74 +120,9 @@ client.on("connected", (address, port) => {
 // message: String - Message received
 // self: Boolean - Message was sent by the client
 client.on("message", (channel, user, message, self) => {
-  // If the message doesn't start with the prefix, exit early.
   if (!message.startsWith(prefix) || self) return;
   let msg = message.split(" ");
-
-  API.login(process.env.COD_EMAIL, process.env.COD_PASSWORD).then(() => {
-    const id = "GregSC#21708";
-    const platform = "battle";
-    API.MWBattleData(id, platform)
-      .then((wzData) => {
-        let kd = wzData.br.kdRatio.toFixed(6).slice(0, -4);
-        let kills = wzData.br.kills;
-        let wins = wzData.br.wins;
-        let topTen = wzData.br.topTen;
-        let topFive = wzData.br.topFive;
-
         switch (message) {
-          case ">kills":
-            client.action(
-              "GregTheBoomer",
-              `Greg has ${kills} kills in Warzone`
-            );
-            break;
-          case ">wins":
-            client.action("GregTheBoomer", `Greg has ${wins} wins in Warzone`);
-            break;
-          case ">kd":
-            client.action(
-              "GregTheBoomer",
-              `Greg has ${kills} kills in Warzone`
-            );
-            break;
-          case ">wins":
-            client.action("GregTheBoomer", `Greg has ${wins} wins in Warzone`);
-            break;
-          case ">kd":
-            client.action(
-              "GregTheBoomer",
-
-              `Greg's kill death ratio is ${kd} in Warzone`
-            );
-            break;
-          case ">top10":
-            client.action(
-              "GregTheBoomer",
-
-              `Greg has finished top ten in ${topTen} games of Warzone`
-            );
-            break;
-          case ">top5":
-            client.action(
-              "GregTheBoomer",
-
-              `Greg has finished top five in ${topFive} games of Warzone`
-            );
-          case ">commands":
-            client.action(
-              "GregTheBoomer",
-
-              `Here's a list of my commands: https://pastebin.com/V8Uv4AcH`
-            );
-            break;
-          case ">help":
-            client.action(
-              "GregTheBoomer",
-
-              `Here's a list of my commands: https://pastebin.com/V8Uv4AcH`
-            );
-            break;
           case ">rapidchess":
             chessAPI.getPlayerStats("GregTheBoomer").then(
               function (res) {
@@ -267,11 +202,6 @@ client.on("message", (channel, user, message, self) => {
               "Invalid command. Check out a list of valid commands here: https://pastebin.com/V8Uv4AcH"
             );
         }
-      })
-      .catch((err) => {
-        client.action("GregTheBoomer", `Error: ${err}`);
-      });
-  });
 });
 
 // cookie storage
