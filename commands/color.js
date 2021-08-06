@@ -310,7 +310,6 @@ module.exports = {
                                           $addToSet: {
                                             vs_colors: getRole(roleName).name,
                                           },
-                                          $inc: {level: 1}
                                         },
                                         { upsert: true }
                                       ).then(() => {
